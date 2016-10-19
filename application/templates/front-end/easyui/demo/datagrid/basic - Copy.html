@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../../themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../demo.css">
+	<script type="text/javascript" src="../../jquery.min.js"></script>
+	<script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Basic DataGrid</h2>
+	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
+	<div style="margin:20px 0;"></div>
+	
+	<table id="market" class="easyui-datagrid" title="Market" style="width:700px;height:250px" 
+			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8080/a',method:'get',loadMsg:''">
+		<thead>
+			<tr>
+				<th data-options="field:'a',width:80">Item ID</th>
+				<th data-options="field:'b',width:100">Product</th>
+				<th data-options="field:'c',width:80,align:'right'">List Price</th>
+			</tr>
+		</thead>
+	</table>
+	
+	<br/>
+	
+	<table id="order" class="easyui-datagrid" title="Order" style="width:700px;height:250px" 
+			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8080/a',method:'get',loadMsg:''">
+		<thead>
+			<tr>
+				<th data-options="field:'a',width:80">Item ID</th>
+				<th data-options="field:'b',width:100">Product</th>
+				<th data-options="field:'c',width:80,align:'right'">List Price</th>
+			</tr>
+		</thead>
+	</table>
+
+	<br/>
+
+	
+	<label class="lbInfo">Quantity: </label> 
+	<input id="quantity" class="easyui-numberbox" precision="2" value="0" />
+	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submit()">Submit</a>
+	
+</body>
+<script type="text/javascript">
+	var timer = setInterval(myTimer, 1000);
+	function myTimer() {
+		$("#market").datagrid("reload"); 
+	}
+
+	
+	function submit() {
+		sendpost(document.getElementById("quantity").value);
+	}
+	
+	function success_handler(msgResult){
+			var result=msgResult;
+			if (result=="1\n") {
+					$.messager.alert('System message',"Succeeded"); 
+			  }
+				else{
+					$.messager.alert('System message',"Failed ");
+				}
+		}
+	
+	function sendpost(parameters){
+		$.ajax({
+		type: "GET",
+		url: "http://localhost:8080/submit",
+		data: {"quantity" : parameters},
+		dataType: 'text',
+		success: success_handler,
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$.messager.alert('System message', 'Time out' + textStatus, 'info');
+		}
+	});
+}
+
+	
+</script>
+</html>
