@@ -9,8 +9,8 @@ QUERY = "http://localhost:8080/query?id={}"
 ORDER = "http://localhost:8080/order?id={}&side=sell&qty={}&price={}"
 
 ORDER_DISCOUNT = 10
-ORDER_SIZE = 200
-INVENTORY = 600
+ORDER_SIZE = 100
+INVENTORY = 0
 
 N = 5
 
@@ -19,9 +19,9 @@ pnl = 0
 
 
 class UseThread(threading.Thread):
-    def __init__(self):
+    def __init__(self, quantity):
         threading.Thread.__init__(self)
-        # super(UseThread, self).__init__()
+        self.quantity = quantity
 
     def run(self):
         try:
@@ -34,6 +34,7 @@ class UseThread(threading.Thread):
         cur = conn.cursor()
         global qty
         global pnl
+        qty = self.quantity
         db_id = 0
 
         def insert(db_id, message, cur):

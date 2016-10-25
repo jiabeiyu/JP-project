@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Custom TextBox - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="front-end/easyui/demo.css">
+	<script type="text/javascript" src="front-end/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="front-end/easyui/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Login</h2>
+	<p>Please login.</p>
+	<div style="margin:20px 0;"></div>
+	<div class="easyui-panel" title="Login to system" style="width:100%;max-width:400px;padding:30px 60px;">
+		<div style="margin-bottom:10px">
+			<input id="username" class="easyui-textbox" style="width:100%;height:40px;padding:12px" data-options="prompt:'Username',iconCls:'icon-man',iconWidth:38">
+		</div>
+		<div style="margin-bottom:20px">
+			<input id="password" class="easyui-textbox" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'Password',iconCls:'icon-lock',iconWidth:38">
+		</div>
+		<div style="margin-bottom:20px">
+			<input type="checkbox" checked="checked">
+			<span>Remember me</span>
+		</div>
+		<div>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:100%;" onclick="submit()">
+				<span style="font-size:14px;">Login</span>
+			</a>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	function submit()
+	{
+		var username=document.getElementById("username").value;
+		var password=document.getElementById("password").value;
+		if (username!="admin" || password!="admin")
+		{
+			$.messager.alert('Login Failed',"Username or password is incorrect"); 
+		}
+		else
+		{
+			self.location="index.html";
+		}
+	}
+</script>

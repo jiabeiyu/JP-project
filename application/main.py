@@ -7,6 +7,7 @@ This is server, run this file when use
 # import random
 
 import sys
+import threading
 from sqlalchemy import create_engine
 from flask import Flask, request, render_template, g, redirect, jsonify
 from Algorithm import UseThread
@@ -136,7 +137,7 @@ def handle_a():
 def handle_submit():
     global BASE
     lang = request.args.get('quantity', 0, type=float)
-    UseThread().start()
+    UseThread(lang).start()
     print lang
     BASE = float(lang)
     return str('succeeded')
