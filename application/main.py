@@ -130,6 +130,42 @@ def handle_a():
     }]'''
 
     return jsonify(rows=info)
+	
+	
+@APP.route("/b")
+@crossdomain(origin='*')
+def handle_b():
+
+
+#    try:
+#        newcurs = g.conn.execute("""SELECT * FROM info""")
+#    except Exception as e:
+#        print "can not read record from database"
+#        return str(e)
+
+#    info = []
+#    for result in newcurs:
+#        temp = {'a': result['id'], 'c': result['info'].encode("utf-8")}
+#        info.append(temp)
+#    newcurs.close()
+    a = random.random() * 100    
+    rows = [{
+        'a': 'a', #time
+        'b': 'a', #result
+        'c': 'a', #price
+        'd': a, #order_size
+    }, {
+        'a': 'a', #time
+        'b': 'a', #result
+        'c': 'a', #price
+        'd': a, #order_size
+    }]
+
+    return jsonify(rows)
+
+	
+	
+	
 
 
 @APP.route("/submit", methods=['GET'])
@@ -142,6 +178,16 @@ def handle_submit():
     BASE = float(lang)
     return str('succeeded')
 
+	
+	
+@APP.route("/strategy", methods=['GET'])　#ni shuo de na duan wen zi
+@crossdomain(origin='*')
+def handle_submit():
+    return str('foo')
+
+
+
+	
 
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run

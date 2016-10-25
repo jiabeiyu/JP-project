@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<title>Trading platform</title>
 	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/icon.css">
 	<link rel="stylesheet" type="text/css" href="front-end/easyui/demo/demo.css">
@@ -10,17 +10,15 @@
 	<script type="text/javascript" src="front-end/easyui/jquery.easyui.min.js"></script>
 </head>
 <body>
-	<h2>Basic DataGrid</h2>
-	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
+	<h2>Trading platform</h2>
 	<div style="margin:20px 0;"></div>
 	
 	<table id="market" class="easyui-datagrid" title="Market" style="width:700px;height:250px" 
 			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/a',method:'get',loadMsg:''">
 		<thead>
 			<tr>
-				<th data-options="field:'a',width:80">Item ID</th>
-				<th data-options="field:'b',width:100">Product</th>
-				<th data-options="field:'c',width:80,align:'right'">List Price</th>
+				<th data-options="field:'a',width:150">Time</th>
+				<th data-options="field:'b',width:200">Price</th>
 			</tr>
 		</thead>
 	</table>
@@ -28,12 +26,14 @@
 	<br/>
 	
 	<table id="order" class="easyui-datagrid" title="Order" style="width:700px;height:250px" 
-			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/a',method:'get',loadMsg:''">
+			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/b',method:'get',loadMsg:''">
 		<thead>
 			<tr>
-				<th data-options="field:'a',width:80">Item ID</th>
-				<th data-options="field:'b',width:100">Product</th>
-				<th data-options="field:'c',width:80,align:'right'">List Price</th>
+				<th data-options="field:'a',width:100">Time</th>
+				<th data-options="field:'b',width:80">Result</th>
+				<th data-options="field:'c',width:80">Price</th>
+				<th data-options="field:'d',width:80">Order Size</th>
+
 			</tr>
 		</thead>
 	</table>
@@ -44,22 +44,44 @@
 	<label class="lbInfo">Quantity: </label> 
 	<input id="quantity" class="easyui-numberbox" precision="2" value="0" />
 	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submit()">Submit</a>
-	
+	<label id='record'>~</label>
 </body>
 <script type="text/javascript">
 	var timer = setInterval(myTimer, 1000);
+	update_textbox();
+	
+	
+	function update_textbox(){
+		$.ajax({
+		type: "GET",
+		url: "http://localhost:8000/strategy",
+		data: {},
+		dataType: 'text',
+		success: function(msgReuslt){
+			document.getElementById('record').innerHTML = msgResult;
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		}
+		
+		});
+	}
+	
+	
 	function myTimer() {
 		$("#market").datagrid("reload"); 
-	}
+		$("#order").datagrid("reload"); 
+
+		}
 
 	
 	function submit() {
 		sendpost(document.getElementById("quantity").value);
+		update_textbox();
 	}
 	
 	function success_handler(msgResult){
 			var result=msgResult;
-			if (result=='succeeded') {
+			if (result=="1\n") {
 					$.messager.alert('System message',"Succeeded"); 
 			  }
 				else{
