@@ -35,11 +35,21 @@ class UseThread(threading.Thread):
         global qty
         global pnl
         qty = self.quantity
-        db_id = 0
 
-        def insert(db_id, message, cur):
+        def insert_info(time_stamp, message, cur):
             # insert server feedback to database
-            query = "INSERT INTO info (id, info) VALUES ({}, '{}');".format(db_id, message)
+            query = "INSERT INTO info (time_quote, info) VALUES ('{}', '{}');".format(time_stamp, message)
+            print query
+            try:
+                cur.execute(query)
+                conn.commit()
+            except:
+                print "I can't write data"
+                conn.rollback()
+
+        def insert_trans(time_stamp, message, cur):
+            # insert server feedback to database
+            query = "INSERT INTO transact (time_quote, info) VALUES ('{}', '{}');".format(time_stamp, message)
             print query
             try:
                 cur.execute(query)
@@ -55,18 +65,19 @@ class UseThread(threading.Thread):
                 time.sleep(1)
                 quote = json.loads(urllib2.urlopen(QUERY.format(random.random())).read())
                 price = float(quote['top_bid']['price'])
+                time_mark = str(quote['timestamp'])
                 print "Quoted at %s" % price
-                print db_id
-                insert(db_id, "Quoted at %s" % price, cur)
-                db_id += 1
+                insert_info(time_mark, "Quoted at %s" % price, cur)
 
             # Attempt to execute a sell order.
             order_args = (ORDER_SIZE, price - ORDER_DISCOUNT)
             print "Executing 'sell' of {:,} @ {:,}".format(*order_args)
-            insert(db_id, "Executing Sell of {:,} at price {:,}".format(*order_args), cur)
-            db_id += 1
+            exec_time = str(json.loads(urllib2.urlopen(QUERY.format(random.random())).read())['timestamp'])
+            insert_info(exec_time, "Executing Sell of {:,} at price {:,}".format(*order_args), cur)
+
             url = ORDER.format(random.random(), *order_args)
             order = json.loads(urllib2.urlopen(url).read())
+            fin_time = order['timestamp']
 
             # Update the PnL if the order was filled.
             if order['avg_price'] > 0:
@@ -75,17 +86,14 @@ class UseThread(threading.Thread):
                 pnl += notional
                 qty -= ORDER_SIZE
                 print "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional)
-                insert(db_id, "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional), cur)
-                db_id += 1
+                insert_trans(fin_time, "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional), cur)
                 print "PnL ${:,}, Qty {:,}".format(pnl, qty)
-                insert(db_id, "PnL ${:,}, Qty {:,}".format(pnl, qty), cur)
-                db_id += 1
+                insert_trans(fin_time, "PnL ${:,}, Qty {:,}".format(pnl, qty), cur)
             else:
                 print "Unfilled order; $%s total, %s qty" % (pnl, qty)
-                insert(db_id, "Unfilled order; $%s total, %s qty" % (pnl, qty), cur)
-                db_id += 1
+                insert_trans(fin_time, "Unfilled order; $%s total, %s qty" % (pnl, qty), cur)
 
             time.sleep(1)
         # Position is liquididated!
         print "Liquidated position for ${:,}".format(pnl)
-        insert(db_id, "Liquidated position for ${:,}".format(pnl), cur)
+        insert_trans(fin_time, "Liquidated position for ${:,}".format(pnl), cur)

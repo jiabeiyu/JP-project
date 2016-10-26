@@ -116,7 +116,7 @@ def handle_a():
 
     info = []
     for result in newcurs:
-        temp = {'a': result['id'], 'c': result['info'].encode("utf-8")}
+        temp = {'a': result['time_quote'], 'b': result['info'].encode("utf-8")}
         info.append(temp)
     newcurs.close()
     '''
@@ -130,43 +130,37 @@ def handle_a():
     }]'''
 
     return jsonify(rows=info)
-	
-	
+
+'''
 @APP.route("/b")
 @crossdomain(origin='*')
 def handle_b():
+    #    try:
+    #        newcurs = g.conn.execute("""SELECT * FROM info""")
+    #    except Exception as e:
+    #        print "can not read record from database"
+    #        return str(e)
 
-
-#    try:
-#        newcurs = g.conn.execute("""SELECT * FROM info""")
-#    except Exception as e:
-#        print "can not read record from database"
-#        return str(e)
-
-#    info = []
-#    for result in newcurs:
-#        temp = {'a': result['id'], 'c': result['info'].encode("utf-8")}
-#        info.append(temp)
-#    newcurs.close()
-    a = random.random() * 100    
+    #    info = []
+    #    for result in newcurs:
+    #        temp = {'a': result['id'], 'c': result['info'].encode("utf-8")}
+    #        info.append(temp)
+    #    newcurs.close()
+    a = 100
     rows = [{
-        'a': 'a', #time
-        'b': 'a', #result
-        'c': 'a', #price
-        'd': a, #order_size
+        'a': 'a',  # time
+        'b': 'a',  # result
+        'c': 'a',  # price
+        'd': a,  # order_size
     }, {
-        'a': 'a', #time
-        'b': 'a', #result
-        'c': 'a', #price
-        'd': a, #order_size
+        'a': 'a',  # time
+        'b': 'a',  # result
+        'c': 'a',  # price
+        'd': a,  # order_size
     }]
 
     return jsonify(rows)
-
-	
-	
-	
-
+'''
 
 @APP.route("/submit", methods=['GET'])
 @crossdomain(origin='*')
@@ -176,18 +170,15 @@ def handle_submit():
     UseThread(lang).start()
     print lang
     BASE = float(lang)
-    return str('succeeded')
+    return "1\n"
 
-	
-	
-@APP.route("/strategy", methods=['GET'])　#ni shuo de na duan wen zi
+
+# ni shuo de na duan wen zi
+@APP.route("/strategy", methods=['GET'])
 @crossdomain(origin='*')
-def handle_submit():
-    return str('foo')
+def strategy():
+    return "I wnat to show this man"
 
-
-
-	
 
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run
