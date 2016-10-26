@@ -36,6 +36,17 @@ class UseThread(threading.Thread):
         global pnl
         qty = self.quantity
 
+        delet1 = "DELETE FROM info;"
+        delet2 = "DELETE FROM transact;"
+        try:
+            cur.execute(delet1)
+            conn.commit()
+            cur.execute(delet2)
+            conn.commit()
+        except:
+            print "I can't write data"
+            conn.rollback()
+
         def insert_info(time_stamp, message, cur):
             # insert server feedback to database
             query = "INSERT INTO info (time_quote, info) VALUES ('{}', '{}');".format(time_stamp, message)
@@ -47,9 +58,10 @@ class UseThread(threading.Thread):
                 print "I can't write data"
                 conn.rollback()
 
-        def insert_trans(time_stamp, message, cur):
+        def insert_trans(time_stamp, result, price, size, cur):
             # insert server feedback to database
-            query = "INSERT INTO transact (time_quote, info) VALUES ('{}', '{}');".format(time_stamp, message)
+            query = "INSERT INTO transact (time_quote, result, price, size) VALUES ('{}', '{}', '{}', '{}');".\
+                format(time_stamp, result, price, size)
             print query
             try:
                 cur.execute(query)
@@ -86,14 +98,14 @@ class UseThread(threading.Thread):
                 pnl += notional
                 qty -= ORDER_SIZE
                 print "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional)
-                insert_trans(fin_time, "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional), cur)
+                insert_trans(fin_time, "success", price, ORDER_SIZE, cur)
                 print "PnL ${:,}, Qty {:,}".format(pnl, qty)
-                insert_trans(fin_time, "PnL ${:,}, Qty {:,}".format(pnl, qty), cur)
+                insert_trans(fin_time, "PnL ${:,}, Qty {:,}".format(pnl, qty), " ", " ", cur)
             else:
                 print "Unfilled order; $%s total, %s qty" % (pnl, qty)
-                insert_trans(fin_time, "Unfilled order; $%s total, %s qty" % (pnl, qty), cur)
+                insert_trans(fin_time, "fail", "none", ORDER_SIZE, cur)
 
             time.sleep(1)
         # Position is liquididated!
         print "Liquidated position for ${:,}".format(pnl)
-        insert_trans(fin_time, "Liquidated position for ${:,}".format(pnl), cur)
+        insert_trans(fin_time, "Liquidated position for ${:,}".format(pnl), " ", " ", cur)

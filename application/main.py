@@ -15,7 +15,7 @@ from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
 
-BASE = 0
+BASE = 0.0
 APP = Flask(__name__)
 
 DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
@@ -107,7 +107,6 @@ def index():
 @APP.route("/a")
 @crossdomain(origin='*')
 def handle_a():
-    global BASE
     try:
         newcurs = g.conn.execute("""SELECT * FROM info""")
     except Exception as e:
@@ -119,46 +118,25 @@ def handle_a():
         temp = {'a': result['time_quote'], 'b': result['info'].encode("utf-8")}
         info.append(temp)
     newcurs.close()
-    '''
-    a = random.random() * 100
-    rows = [{
-        'a': 'a',
-        'c': a,
-    }, {
-        'a': 'aa',
-        'c': a + BASE,
-    }]'''
-
     return jsonify(rows=info)
+
 
 @APP.route("/b")
 @crossdomain(origin='*')
 def handle_b():
-    #    try:
-    #        newcurs = g.conn.execute("""SELECT * FROM info""")
-    #    except Exception as e:
-    #        print "can not read record from database"
-    #        return str(e)
+    try:
+        newcurs = g.conn.execute("""SELECT * FROM transact""")
+    except Exception as e:
+        print "can not read record from database"
+        return str(e)
 
-    #    info = []
-    #    for result in newcurs:
-    #        temp = {'a': result['id'], 'c': result['info'].encode("utf-8")}
-    #        info.append(temp)
-    #    newcurs.close()
-    a = 100
-    rows = [{
-        'a': 'a',  # time
-        'b': 'a',  # result
-        'c': 'a',  # price
-        'd': a,  # order_size
-    }, {
-        'a': 'a',  # time
-        'b': 'a',  # result
-        'c': 'a',  # price
-        'd': a,  # order_size
-    }]
+    info = []
+    for result in newcurs:
+        temp = {'a': result['time_quote'], 'b': result['result'], 'c': result['price'], 'd': result['size']}
+        info.append(temp)
+    newcurs.close()
+    return jsonify(rows=info)
 
-    return jsonify(rows)
 
 @APP.route("/submit", methods=['GET'])
 @crossdomain(origin='*')
@@ -175,8 +153,14 @@ def handle_submit():
 @APP.route("/strategy", methods=['GET'])
 @crossdomain(origin='*')
 def strategy():
-    return "I wnat to show this man"
-
+    global BASE
+    print BASE
+    if BASE == 0:
+        return "Waiting to Start !"
+    elif BASE > 0:
+        return "We will sperated your $ %s order evenly into 100 each and sell them every 5 second" % BASE
+    else:
+        "Please try positive input !"
 
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run
