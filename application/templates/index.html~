@@ -58,7 +58,7 @@
 		url: "http://localhost:8000/strategy",
 		data: {},
 		dataType: 'text',
-		success: function(msgResult){
+		success: function(msgReuslt){
 			document.getElementById('record').innerHTML = msgResult;
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){

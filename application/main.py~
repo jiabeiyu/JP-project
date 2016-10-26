@@ -131,6 +131,7 @@ def handle_a():
 
     return jsonify(rows=info)
 
+'''
 @APP.route("/b")
 @crossdomain(origin='*')
 def handle_b():
@@ -159,6 +160,7 @@ def handle_b():
     }]
 
     return jsonify(rows)
+'''
 
 @APP.route("/submit", methods=['GET'])
 @crossdomain(origin='*')
