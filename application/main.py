@@ -116,7 +116,7 @@ def handle_a():
     info = []
     for result in newcurs:
         temp = {'a': result['time_quote'], 'b': result['info'].encode("utf-8")}
-        info.append(temp)
+        info.insert(0, temp)
     newcurs.close()
     return jsonify(rows=info)
 
@@ -133,7 +133,7 @@ def handle_b():
     info = []
     for result in newcurs:
         temp = {'a': result['time_quote'], 'b': result['result'], 'c': result['price'], 'd': result['size']}
-        info.append(temp)
+        info.insert(0, temp)
     newcurs.close()
     return jsonify(rows=info)
 
