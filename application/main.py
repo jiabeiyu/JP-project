@@ -7,9 +7,12 @@ This is server, run this file when use
 # import random
 
 import sys
-import threading
+import json
+import urllib2
 from sqlalchemy import create_engine
+import psycopg2
 from flask import Flask, request, render_template, g, redirect, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 from Algorithm import UseThread
 from datetime import timedelta
 from flask import make_response, request, current_app
@@ -104,11 +107,23 @@ def index():
     return render_template("index.html", **locals())
 
 
+@APP.route("/get_price")
+@crossdomain(origin='*')
+def get_price():
+    QUERY = "http://localhost:8080/query?id={}"
+    quote = json.loads(urllib2.urlopen(QUERY.format(1.01)).read())
+    price = float(quote['top_bid']['price'])
+    time_mark = str(quote['timestamp'])
+    print "Quoted at {} , time is {} ".format(price, time_mark)
+    info = {'time': time_mark, 'price': price}
+    return jsonify(rows=info)
+
+
 @APP.route("/a")
 @crossdomain(origin='*')
 def handle_a():
     try:
-        newcurs = g.conn.execute("""SELECT * FROM info""")
+        newcurs = g.conn.execute("""SELECT * FROM info ORDER BY id""")
     except Exception as e:
         print "can not read record from database"
         return str(e)
@@ -125,7 +140,7 @@ def handle_a():
 @crossdomain(origin='*')
 def handle_b():
     try:
-        newcurs = g.conn.execute("""SELECT * FROM transact""")
+        newcurs = g.conn.execute("""SELECT * FROM transact ORDER BY id""")
     except Exception as e:
         print "can not read record from database"
         return str(e)
@@ -149,7 +164,50 @@ def handle_submit():
     return "1\n"
 
 
-# ni shuo de na duan wen zi
+@APP.route("/register", methods=['POST'])
+@crossdomain(origin='*')
+def register():
+    username = request.form['username']
+    password = request.form['password']
+    pw_hash = generate_password_hash(password)
+    try:
+        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
+        cur = conn.cursor()
+        query = "INSERT INTO user_info (name, pass) VALUES ('{}', '{}');".format(username, pw_hash)
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        conn.rollback()
+        print "can not write record to database"
+        print str(e)
+        return str(e)
+
+    return "1\n"
+
+
+@APP.route("/login", methods=['POST'])
+@crossdomain(origin='*')
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    try:
+        newcurs = g.conn.execute("""SELECT * FROM user_info WHERE name = '{}'""".format(username))
+    except Exception as e:
+        print "can not read record from database"
+        return str(e)
+
+    for result in newcurs:
+        correct = result['pass']
+        print correct
+        if check_password_hash(correct, password):
+            newcurs.close()
+            return "1\n"
+    newcurs.close()
+    return "2\n"
+
+
 @APP.route("/strategy", methods=['GET'])
 @crossdomain(origin='*')
 def strategy():
@@ -161,6 +219,7 @@ def strategy():
         return "We will sperated your $ %s order evenly into 100 each and sell them every 5 second" % BASE
     else:
         "Please try positive input !"
+
 
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run

@@ -47,9 +47,9 @@ class UseThread(threading.Thread):
             print "I can't write data"
             conn.rollback()
 
-        def insert_info(time_stamp, message, cur):
+        def insert_info(data_id, time_stamp, message, cur):
             # insert server feedback to database
-            query = "INSERT INTO info (time_quote, info) VALUES ('{}', '{}');".format(time_stamp, message)
+            query = "INSERT INTO info (id, time_quote, info) VALUES ('{}', '{}', '{}');".format(data_id, time_stamp, message)
             print query
             try:
                 cur.execute(query)
@@ -58,10 +58,10 @@ class UseThread(threading.Thread):
                 print "I can't write data"
                 conn.rollback()
 
-        def insert_trans(time_stamp, result, price, size, cur):
+        def insert_trans(data_id, time_stamp, result, price, size, cur):
             # insert server feedback to database
-            query = "INSERT INTO transact (time_quote, result, price, size) VALUES ('{}', '{}', '{}', '{}');".\
-                format(time_stamp, result, price, size)
+            query = "INSERT INTO transact (id, time_quote, result, price, size) VALUES ('{}', '{}', '{}', '{}', '{}');".\
+                format(data_id, time_stamp, result, price, size)
             print query
             try:
                 cur.execute(query)
@@ -71,6 +71,7 @@ class UseThread(threading.Thread):
                 conn.rollback()
 
         # Repeat the strategy until we run out of shares.
+        db_id = 0
         while qty > 0:
             # Query the price once every N seconds.
             for _ in xrange(N):
@@ -79,13 +80,15 @@ class UseThread(threading.Thread):
                 price = float(quote['top_bid']['price'])
                 time_mark = str(quote['timestamp'])
                 print "Quoted at %s" % price
-                insert_info(time_mark, "Quoted at %s" % price, cur)
+                insert_info(db_id, time_mark, "Quoted at %s" % price, cur)
+                db_id += 1
 
             # Attempt to execute a sell order.
             order_args = (ORDER_SIZE, price - ORDER_DISCOUNT)
             print "Executing 'sell' of {:,} @ {:,}".format(*order_args)
             exec_time = str(json.loads(urllib2.urlopen(QUERY.format(random.random())).read())['timestamp'])
-            insert_info(exec_time, "Executing Sell of {:,} at price {:,}".format(*order_args), cur)
+            insert_info(db_id, exec_time, "Executing Sell of {:,} at price {:,}".format(*order_args), cur)
+            db_id += 1
 
             url = ORDER.format(random.random(), *order_args)
             order = json.loads(urllib2.urlopen(url).read())
@@ -98,14 +101,18 @@ class UseThread(threading.Thread):
                 pnl += notional
                 qty -= ORDER_SIZE
                 print "Sold {:,} for ${:,}/share, ${:,} notional".format(ORDER_SIZE, price, notional)
-                insert_trans(fin_time, "success", price, ORDER_SIZE, cur)
+                insert_trans(db_id, fin_time, "success", price, ORDER_SIZE, cur)
+                db_id += 1
                 print "PnL ${:,}, Qty {:,}".format(pnl, qty)
-                insert_trans(fin_time, "PnL ${:,}, Qty {:,}".format(pnl, qty), " ", " ", cur)
+                insert_trans(db_id, fin_time, "PnL ${:,}, Qty {:,}".format(pnl, qty), " ", " ", cur)
+                db_id += 1
             else:
                 print "Unfilled order; $%s total, %s qty" % (pnl, qty)
-                insert_trans(fin_time, "fail", "none", ORDER_SIZE, cur)
+                insert_trans(db_id, fin_time, "fail", "none", ORDER_SIZE, cur)
+                db_id += 1
 
             time.sleep(1)
         # Position is liquididated!
         print "Liquidated position for ${:,}".format(pnl)
-        insert_trans(fin_time, "Liquidated position for ${:,}".format(pnl), " ", " ", cur)
+        insert_trans(db_id, fin_time, "Liquidated position for ${:,}".format(pnl), " ", " ", cur)
+        db_id += 1

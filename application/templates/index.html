@@ -3,35 +3,52 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Trading platform</title>
-	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/default/easyui.css">
-	<link rel="stylesheet" type="text/css" href="front-end/easyui/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="front-end/easyui/demo/demo.css">
-	<script type="text/javascript" src="front-end/easyui/jquery.min.js"></script>
-	<script type="text/javascript" src="front-end/easyui/jquery.easyui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../static/front-end/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../static/front-end/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../static/front-end/easyui/demo/demo.css">
+	<script type="text/javascript" src="../static/front-end/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/front-end/easyui/jquery.easyui.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="../static/dist/Chart.bundle.js"></script>
+	<style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+	</style>
+
+
 </head>
 <body>
 	<h2>Trading platform</h2>
 	<div style="margin:20px 0;"></div>
 	
-	<table id="market" class="easyui-datagrid" title="Market" style="width:700px;height:250px" 
+
+		<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+
+
+	<table id="market" class="easyui-datagrid" title="Market" style="width:800px;height:250px" 
 			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/a',method:'get',loadMsg:''">
 		<thead>
 			<tr>
-				<th data-options="field:'a',width:150">Time</th>
-				<th data-options="field:'b',width:200">Price</th>
+				<th data-options="field:'a',width:200">Time</th>
+				<th data-options="field:'b',width:220">Price</th>
 			</tr>
 		</thead>
 	</table>
 	
 	<br/>
 	
-	<table id="order" class="easyui-datagrid" title="Order" style="width:700px;height:250px" 
+	<table id="order" class="easyui-datagrid" title="Order" style="width:800px;height:250px" 
 			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/b',method:'get',loadMsg:''">
 		<thead>
 			<tr>
-				<th data-options="field:'a',width:100">Time</th>
-				<th data-options="field:'b',width:80">Result</th>
-				<th data-options="field:'c',width:80">Price</th>
+				<th data-options="field:'a',width:200">Time</th>
+				<th data-options="field:'b',width:250">Result</th>
+				<th data-options="field:'c',width:120">Price</th>
 				<th data-options="field:'d',width:80">Order Size</th>
 
 			</tr>
@@ -46,6 +63,7 @@
 	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submit()">Submit</a>
 	<br>
 	<label id='record'>~</label>
+
 </body>
 <script type="text/javascript">
 	var timer = setInterval(myTimer, 1000);
@@ -99,9 +117,137 @@
 		success: success_handler,
 		error: function(XMLHttpRequest, textStatus, errorThrown){
 			$.messager.alert('System message', 'Time out' + textStatus, 'info');
+			}
+		});
+	}
+
+
+
+		var timeFormat = 'h';
+
+		var timer2 = setInterval(myTimer2, 1000);
+		function myTimer2() {
+		
+		$.ajax({
+		type: "GET",
+		url: "http://localhost:8000/get_price",
+		data: {},
+		dataType: 'text',
+		success: function(msgReuslt){
+		var m=JSON.parse(msgReuslt).rows;
+		var time=moment(m.time,"YYYY-MM-DD HH:mm:ss:SSSSSS");
+		var price=m.price;
+
+		
+		config.data.datasets[0].data.push({
+				x: time,
+				y: price,
+			});				
+			window.myLine.update();
+		
+		
+		
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
 		}
-	});
-}
+		
+		});
+		
+		
+		}
+		
+
+		
+		
+		function randomScalingFactor() {
+			return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+		}
+
+		function randomColorFactor() {
+			return Math.round(Math.random() * 255);
+		}
+
+		function randomColor(opacity) {
+			return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+		}
+
+		function newDate(seconds) {
+			return moment().add(seconds, 's').toDate();
+		}
+
+		function newDateString(seconds) {
+//			var minutes = Math.round(Math.random() * 60);
+			return moment().add(seconds, 's');
+		}
+
+		
+		
+		function newTimestamp(days) {
+			return moment().add(days, 'h').unix();
+		}
+
+		
+		var config = {
+			type: 'line',
+			data: {
+				labels: [], // Date Objects
+				datasets: [{
+					label: "Market Price",
+
+					data: []
+					,
+
+					fill: false
+				}]
+			},
+			options: {
+				responsive: true,
+                title:{
+                    display:true,
+                    text:"Market Price"
+                },
+				scales: {
+					xAxes: [{
+					type: "time",
+
+						time: {
+						tooltipFormat: 'hh:mm:ss:SSS',
+						minUnit:'second',	
+						displayFormats: {
+
+									second: 'hh:mm:ss'
+								}								//,							
+//							unit: 'second',
+							// round: 'day'
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						}
+					} ],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'value'
+						}
+					}]
+				},
+			}
+		};
+
+		$.each(config.data.datasets, function(i, dataset) {
+			dataset.borderColor = randomColor(0.4);
+			dataset.backgroundColor = randomColor(0.5);
+			dataset.pointBorderColor = randomColor(0.7);
+			dataset.pointBackgroundColor = randomColor(0.5);
+			dataset.pointBorderWidth = 1;
+		});
+
+		window.onload = function() {
+			var ctx = document.getElementById("canvas").getContext("2d");
+			window.myLine = new Chart(ctx, config);
+
+		};
 
 	
 </script>
