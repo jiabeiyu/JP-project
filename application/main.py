@@ -187,6 +187,26 @@ def register():
     return "1\n"
 
 
+@APP.route("/del_user", methods=['POST'])
+@crossdomain(origin='*')
+def del_user():
+    username = request.form['username']
+    try:
+        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
+        cur = conn.cursor()
+        query = "DELETE FROM user_info WHERE name='{}';".format(username)
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        conn.rollback()
+        print "can not write record to database"
+        print str(e)
+        return str(e)
+    return "1\n"
+
+
 @APP.route("/login", methods=['POST'])
 @crossdomain(origin='*')
 def login():
@@ -200,7 +220,6 @@ def login():
 
     for result in newcurs:
         correct = result['pass']
-        print correct
         if check_password_hash(correct, password):
             newcurs.close()
             return "1\n"

@@ -1,0 +1,91 @@
+/System/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7 "/Applications/PyCharm CE.app/Contents/helpers/pycharm/utrunner.py" /Users/Linnan/PycharmProjects/JP-project/application/test.py true
+Testing started at 2:20 PM ...
+pass
+done
+Quoted at 85.91 , time is 2016-10-21 02:51:12.945205
+{
+  "rows": {
+    "price": 85.91,
+    "time": "2016-10-21 02:51:12.945205"
+  }
+}
+done
+{
+  "rows": [
+    {
+      "a": "2016-10-21 04:59:18.997206",
+      "b": "Liquidated position for $55,040.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:59:18.997206",
+      "b": "PnL $55,040.0, Qty 0.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:59:18.997206",
+      "b": "success",
+      "c": "109.53",
+      "d": "100"
+    },
+    {
+      "a": "2016-10-21 04:59:13.611874",
+      "b": "PnL $44,087.0, Qty 100.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:59:13.611874",
+      "b": "success",
+      "c": "109.82",
+      "d": "100"
+    },
+    {
+      "a": "2016-10-21 04:59:07.264720",
+      "b": "PnL $33,105.0, Qty 200.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:59:07.264720",
+      "b": "success",
+      "c": "110.65",
+      "d": "100"
+    },
+    {
+      "a": "2016-10-21 04:59:00.999440",
+      "b": "PnL $22,040.0, Qty 300.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:59:00.999440",
+      "b": "success",
+      "c": "110.66",
+      "d": "100"
+    },
+    {
+      "a": "2016-10-21 04:58:54.775732",
+      "b": "PnL $10,974.0, Qty 400.0",
+      "c": " ",
+      "d": " "
+    },
+    {
+      "a": "2016-10-21 04:58:54.775732",
+      "b": "success",
+      "c": "109.74",
+      "d": "100"
+    }
+  ]
+}
+done
+1
+
+all login are passed
+done
+done
+done
+
+Process finished with exit code 0
