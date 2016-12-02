@@ -1,18 +1,7 @@
 import os
 import main
 import unittest
-import tempfile
-import sys
-import json
-import urllib2
-from sqlalchemy import create_engine
-import psycopg2
-from flask import Flask, request, render_template, g, redirect, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from Algorithm import UseThread
-from datetime import timedelta
-from flask import make_response, request, current_app
-from functools import update_wrapper
+
 
 class FlaskrTestCase(unittest.TestCase):
 

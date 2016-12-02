@@ -11,11 +11,10 @@ import json
 import urllib2
 from sqlalchemy import create_engine
 import psycopg2
-from flask import Flask, request, render_template, g, redirect, jsonify
+from flask import Flask, request, render_template, g, jsonify, make_response, current_app  # , redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from Algorithm import UseThread
 from datetime import timedelta
-from flask import make_response, request, current_app
 from functools import update_wrapper
 
 BASE = 0.0
@@ -27,6 +26,20 @@ ENGINE = create_engine(DATABASEURI)
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True, automatic_options=True):
+    """
+        This is function quoted to solve cross domain issue
+
+        Args:
+            origin
+            methods
+            headers
+            max_age
+            attach_to_all
+            automatic_options
+
+        Returns:
+            none
+        """
     if methods is not None:
         methods = ', '.join(sorted(x.upper() for x in methods))
     if headers is not None and not isinstance(headers, basestring):
@@ -91,6 +104,10 @@ def teardown_request(exception):
     """
     At the end of the web request, this makes sure to close the database connection.
     If you don't, the database could run out of memory!
+    Args:
+        exception
+    Return:
+        none
     """
     try:
         g.conn.close()
@@ -102,7 +119,7 @@ def teardown_request(exception):
 def index():
     """
     access the main page
-    :return:
+
     """
     return render_template("index.html", **locals())
 
@@ -110,6 +127,10 @@ def index():
 @APP.route("/get_price")
 @crossdomain(origin='*')
 def get_price():
+    """
+    handle request of getting time and price
+
+    """
     QUERY = "http://localhost:8080/query?id={}"
     quote = json.loads(urllib2.urlopen(QUERY.format(1.01)).read())
     price = float(quote['top_bid']['price'])
@@ -122,6 +143,10 @@ def get_price():
 @APP.route("/a")
 @crossdomain(origin='*')
 def handle_a():
+    """
+    handle request of getting time and price
+
+    """
     try:
         newcurs = g.conn.execute("""SELECT * FROM info ORDER BY id""")
     except Exception as e:
@@ -147,7 +172,8 @@ def handle_b():
 
     info = []
     for result in newcurs:
-        temp = {'a': result['time_quote'], 'b': result['result'], 'c': result['price'], 'd': result['size']}
+        temp = {'a': result['time_quote'], 'b': result['result'],
+                'c': result['price'], 'd': result['size']}
         info.insert(0, temp)
     newcurs.close()
     return jsonify(rows=info)
@@ -235,7 +261,8 @@ def strategy():
     if BASE == 0:
         return "Waiting to Start !"
     elif BASE > 0:
-        return "We will sperated your $ %s order evenly into 100 each and sell them every 5 second" % BASE
+        return "We will sperated your $ %s order evenly into" \
+               " 100 each and sell them every 5 second" % BASE
     else:
         "Please try positive input !"
 
@@ -245,4 +272,4 @@ if __name__ == "__main__":
     reload(sys)
     sys.setdefaultencoding('utf8')
 
-    APP.run(debug=True, port=8000)
+    APP.run(debug=False, port=8000)

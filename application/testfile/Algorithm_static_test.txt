@@ -1,0 +1,276 @@
+No config file found, using default configuration
+************* Module main
+C:150, 0: Line too long (108/100) (line-too-long)
+C:238, 0: Line too long (106/100) (line-too-long)
+W: 18, 0: Reimport 'request' (imported line 14) (reimported)
+C: 28, 0: Missing function docstring (missing-docstring)
+R: 28, 0: Too many arguments (6/5) (too-many-arguments)
+E: 37,18: Instance of 'int' has no 'total_seconds' member (no-member)
+C: 39, 4: Missing function docstring (missing-docstring)
+C: 46, 4: Invalid argument name "f" (invalid-name)
+C: 46, 4: Missing function docstring (missing-docstring)
+C: 47, 8: Missing function docstring (missing-docstring)
+C: 55,12: Invalid variable name "h" (invalid-name)
+W: 83,11: Catching too general exception Exception (broad-except)
+W: 97,11: Catching too general exception Exception (broad-except)
+C:112, 0: Missing function docstring (missing-docstring)
+C:113, 4: Invalid variable name "QUERY" (invalid-name)
+C:124, 0: Missing function docstring (missing-docstring)
+W:127,11: Catching too general exception Exception (broad-except)
+C:127,24: Invalid variable name "e" (invalid-name)
+C:141, 0: Missing function docstring (missing-docstring)
+W:144,11: Catching too general exception Exception (broad-except)
+C:144,24: Invalid variable name "e" (invalid-name)
+C:158, 0: Missing function docstring (missing-docstring)
+W:159, 4: Using the global statement (global-statement)
+C:169, 0: Missing function docstring (missing-docstring)
+W:181,11: Catching too general exception Exception (broad-except)
+C:181,24: Invalid variable name "e" (invalid-name)
+C:192, 0: Missing function docstring (missing-docstring)
+W:202,11: Catching too general exception Exception (broad-except)
+C:202,24: Invalid variable name "e" (invalid-name)
+C:212, 0: Missing function docstring (missing-docstring)
+W:217,11: Catching too general exception Exception (broad-except)
+C:217,24: Invalid variable name "e" (invalid-name)
+C:232, 0: Missing function docstring (missing-docstring)
+W:233, 4: Using global for 'BASE' but no assignment is done (global-variable-not-assigned)
+W:240, 8: String statement has no effect (pointless-string-statement)
+W: 14, 0: Unused redirect imported from flask (unused-import)
+C: 17, 0: standard import "from datetime import timedelta" comes before "from sqlalchemy import create_engine" (wrong-import-order)
+C: 19, 0: standard import "from functools import update_wrapper" comes before "from sqlalchemy import create_engine" (wrong-import-order)
+C: 18, 0: Imports from package flask are not grouped (ungrouped-imports)
+
+
+Report
+======
+161 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|method   |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|function |15     |7          |+8.00      |20.00       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    Algorithm (main)
+    flask (main)
+    psycopg2 (main)
+    sqlalchemy (main)
+    werkzeug
+      \-security (main)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |183    |73.49 |71       |+112.00    |
++----------+-------+------+---------+-----------+
+|docstring |20     |8.03  |35       |-15.00     |
++----------+-------+------+---------+-----------+
+|comment   |5      |2.01  |6        |-1.00      |
++----------+-------+------+---------+-----------+
+|empty     |41     |16.47 |28       |+13.00     |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |25     |0        |+25.00     |
++-----------+-------+---------+-----------+
+|refactor   |1      |0        |+1.00      |
++-----------+-------+---------+-----------+
+|warning    |12     |5        |+7.00      |
++-----------+-------+---------+-----------+
+|error      |1      |0        |+1.00      |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------------------------+------------+
+|message id                   |occurrences |
++=============================+============+
+|missing-docstring            |12          |
++-----------------------------+------------+
+|invalid-name                 |8           |
++-----------------------------+------------+
+|broad-except                 |7           |
++-----------------------------+------------+
+|wrong-import-order           |2           |
++-----------------------------+------------+
+|line-too-long                |2           |
++-----------------------------+------------+
+|unused-import                |1           |
++-----------------------------+------------+
+|ungrouped-imports            |1           |
++-----------------------------+------------+
+|too-many-arguments           |1           |
++-----------------------------+------------+
+|reimported                   |1           |
++-----------------------------+------------+
+|pointless-string-statement   |1           |
++-----------------------------+------------+
+|no-member                    |1           |
++-----------------------------+------------+
+|global-variable-not-assigned |1           |
++-----------------------------+------------+
+|global-statement             |1           |
++-----------------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 7.33/10 (previous run: 9.15/10, -1.82)
+
+
+
+
+
+After fix:
+
+
+No config file found, using default configuration
+************* Module Algorithm
+W: 85, 8: No exception type(s) specified (bare-except)
+W:109, 8: No exception type(s) specified (bare-except)
+W:135, 8: No exception type(s) specified (bare-except)
+W:169, 8: No exception type(s) specified (bare-except)
+W:186, 8: No exception type(s) specified (bare-except)
+W:211, 8: No exception type(s) specified (bare-except)
+R:216, 4: Too many local variables (18/15) (too-many-locals)
+E:232,14: Instance of 'int' has no 'cursor' member (no-member)
+
+
+Report
+======
+135 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |10     |8          |+2.00      |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    psycopg2 (Algorithm)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |153    |51.34 |152      |+1.00      |
++----------+-------+------+---------+-----------+
+|docstring |103    |34.56 |82       |+21.00     |
++----------+-------+------+---------+-----------+
+|comment   |20     |6.71  |25       |-5.00      |
++----------+-------+------+---------+-----------+
+|empty     |22     |7.38  |21       |+1.00      |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |0        |=          |
++-----------+-------+---------+-----------+
+|refactor   |1      |2        |-1.00      |
++-----------+-------+---------+-----------+
+|warning    |6      |7        |-1.00      |
++-----------+-------+---------+-----------+
+|error      |1      |1        |=          |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++----------------+------------+
+|message id      |occurrences |
++================+============+
+|bare-except     |6           |
++----------------+------------+
+|too-many-locals |1           |
++----------------+------------+
+|no-member       |1           |
++----------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 9.11/10 (previous run: 8.99/10, +0.13)
