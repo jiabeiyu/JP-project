@@ -1,0 +1,7 @@
+code inspection report
+Write a document that identifies exactly which code constitutes each component (e.g., which files), and who the reader and recorder were for each component. 
+describing the new problems found.
+
+
+Demo update
+Describe what you were able to demo and record any problems that arose, any recommendations from your mentor, etc. on github.  Since you should have accumulated multiple issues by now, tell us which specific issues stem from this demo and how to find them. 

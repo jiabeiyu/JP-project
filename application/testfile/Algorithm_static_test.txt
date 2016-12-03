@@ -273,4 +273,53 @@ Messages
 
 Global evaluation
 -----------------
-Your code has been rated at 9.11/10 (previous run: 8.99/10, +0.13)
+Your code has been rated at 9.11/10 (previous run: 9.04/10, +0.07)
+
+
+Fixed problem:
+C:150, 0: Line too long (108/100) (line-too-long)
+C:238, 0: Line too long (106/100) (line-too-long)
+W: 18, 0: Reimport 'request' (imported line 14) (reimported)
+C: 28, 0: Missing function docstring (missing-docstring)
+R: 28, 0: Too many arguments (6/5) (too-many-arguments)
+E: 37,18: Instance of 'int' has no 'total_seconds' member (no-member)
+C: 39, 4: Missing function docstring (missing-docstring)
+C: 46, 4: Invalid argument name "f" (invalid-name)
+C: 46, 4: Missing function docstring (missing-docstring)
+C: 47, 8: Missing function docstring (missing-docstring)
+C: 55,12: Invalid variable name "h" (invalid-name)
+C:112, 0: Missing function docstring (missing-docstring)
+C:113, 4: Invalid variable name "QUERY" (invalid-name)
+C:124, 0: Missing function docstring (missing-docstring)
+C:127,24: Invalid variable name "e" (invalid-name)
+C:141, 0: Missing function docstring (missing-docstring)
+C:144,24: Invalid variable name "e" (invalid-name)
+C:158, 0: Missing function docstring (missing-docstring)
+W:159, 4: Using the global statement (global-statement)
+C:169, 0: Missing function docstring (missing-docstring)
+C:181,24: Invalid variable name "e" (invalid-name)
+C:192, 0: Missing function docstring (missing-docstring)
+C:202,24: Invalid variable name "e" (invalid-name)
+C:212, 0: Missing function docstring (missing-docstring)
+C:217,24: Invalid variable name "e" (invalid-name)
+C:232, 0: Missing function docstring (missing-docstring)
+W:233, 4: Using global for 'BASE' but no assignment is done (global-variable-not-assigned)
+W:240, 8: String statement has no effect (pointless-string-statement)
+W: 14, 0: Unused redirect imported from flask (unused-import)
+C: 17, 0: standard import "from datetime import timedelta" comes before "from sqlalchemy import create_engine" (wrong-import-order)
+C: 19, 0: standard import "from functools import update_wrapper" comes before "from sqlalchemy import create_engine" (wrong-import-order)
+C: 18, 0: Imports from package flask are not grouped (ungrouped-imports)
+
+Unfixed problem:
+W: 85, 8: No exception type(s) specified (bare-except)
+W:109, 8: No exception type(s) specified (bare-except)
+W:135, 8: No exception type(s) specified (bare-except)
+W:169, 8: No exception type(s) specified (bare-except)
+W:186, 8: No exception type(s) specified (bare-except)
+W:211, 8: No exception type(s) specified (bare-except)
+R:216, 4: Too many local variables (16/15) (too-many-locals)
+E:232,14: Instance of 'int' has no 'cursor' member (no-member)
+
+The reason we cannot fix the no exception specified warning is that the error is sent by JP server so the only thing we can do is catch the error and print it out. If we specify the exception types and JP server change the exception type, we might not catch that exception and cause crash of software
+The too many local variables is caused by tracing the change of states while trading happened. Currently we are not able to decrease number of variables.
+No-member problem should be ignored since this is caused by pylint does not get variable is not int type. We have no way to tell pylint about it.

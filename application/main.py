@@ -9,15 +9,15 @@ This is server, run this file when use
 import sys
 import json
 import urllib2
-from sqlalchemy import create_engine
-import psycopg2
-from flask import Flask, request, render_template, g, jsonify, make_response, current_app  # , redirect
-from werkzeug.security import generate_password_hash, check_password_hash
-from Algorithm import UseThread
 from datetime import timedelta
 from functools import update_wrapper
+from sqlalchemy import create_engine
+import psycopg2
+from flask import Flask, request, render_template, g, \
+    jsonify, make_response, current_app  # , redirect
+from werkzeug.security import generate_password_hash, check_password_hash
+from Algorithm import UseThread
 
-BASE = 0.0
 APP = Flask(__name__)
 
 DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
@@ -50,34 +50,53 @@ def crossdomain(origin=None, methods=None, headers=None,
         max_age = max_age.total_seconds()
 
     def get_methods():
+        """
+        return http method if it is not None
+
+        """
         if methods is not None:
             return methods
 
         options_resp = current_app.make_default_options_response()
         return options_resp.headers['allow']
 
-    def decorator(f):
+    def decorator(func):
+        """
+        return function decorator
+
+        Args:
+            func: function that used by request
+
+        """
         def wrapped_function(*args, **kwargs):
+            """
+            return wrapped function decorator
+
+            Args:
+                args
+                kwargs
+
+            """
             if automatic_options and request.method == 'OPTIONS':
                 resp = current_app.make_default_options_response()
             else:
-                resp = make_response(f(*args, **kwargs))
+                resp = make_response(func(*args, **kwargs))
             if not attach_to_all and request.method != 'OPTIONS':
                 return resp
 
-            h = resp.headers
-            h['Access-Control-Allow-Origin'] = origin
-            h['Access-Control-Allow-Methods'] = get_methods()
-            h['Access-Control-Max-Age'] = str(max_age)
-            h['Access-Control-Allow-Credentials'] = 'true'
-            h['Access-Control-Allow-Headers'] = \
+            head = resp.headers
+            head['Access-Control-Allow-Origin'] = origin
+            head['Access-Control-Allow-Methods'] = get_methods()
+            head['Access-Control-Max-Age'] = str(max_age)
+            head['Access-Control-Allow-Credentials'] = 'true'
+            head['Access-Control-Allow-Headers'] = \
                 "Origin, X-Requested-With, Content-Type, Accept, Authorization"
             if headers is not None:
-                h['Access-Control-Allow-Headers'] = headers
+                head['Access-Control-Allow-Headers'] = headers
             return resp
 
-        f.provide_automatic_options = False
-        return update_wrapper(wrapped_function, f)
+        func.provide_automatic_options = False
+        return update_wrapper(wrapped_function, func)
 
     return decorator
 
@@ -131,8 +150,8 @@ def get_price():
     handle request of getting time and price
 
     """
-    QUERY = "http://localhost:8080/query?id={}"
-    quote = json.loads(urllib2.urlopen(QUERY.format(1.01)).read())
+    query = "http://localhost:8080/query?id={}"
+    quote = json.loads(urllib2.urlopen(query.format(1.01)).read())
     price = float(quote['top_bid']['price'])
     time_mark = str(quote['timestamp'])
     print "Quoted at {} , time is {} ".format(price, time_mark)
@@ -149,9 +168,9 @@ def handle_a():
     """
     try:
         newcurs = g.conn.execute("""SELECT * FROM info ORDER BY id""")
-    except Exception as e:
+    except Exception as info:
         print "can not read record from database"
-        return str(e)
+        return str(info)
 
     info = []
     for result in newcurs:
@@ -164,11 +183,15 @@ def handle_a():
 @APP.route("/b")
 @crossdomain(origin='*')
 def handle_b():
+    """
+    handle request of getting transaction history
+
+    """
     try:
         newcurs = g.conn.execute("""SELECT * FROM transact ORDER BY id""")
-    except Exception as e:
+    except Exception as info:
         print "can not read record from database"
-        return str(e)
+        return str(info)
 
     info = []
     for result in newcurs:
@@ -182,17 +205,23 @@ def handle_b():
 @APP.route("/submit", methods=['GET'])
 @crossdomain(origin='*')
 def handle_submit():
-    global BASE
+    """
+    handle request of start an order
+
+    """
     lang = request.args.get('quantity', 0, type=float)
     UseThread(lang).start()
     print lang
-    BASE = float(lang)
     return "1\n"
 
 
 @APP.route("/register", methods=['POST'])
 @crossdomain(origin='*')
 def register():
+    """
+    store information into database when user send register request
+
+    """
     username = request.form['username']
     password = request.form['password']
     pw_hash = generate_password_hash(password)
@@ -204,11 +233,11 @@ def register():
         conn.commit()
         cur.close()
         conn.close()
-    except Exception as e:
+    except Exception as info:
         conn.rollback()
         print "can not write record to database"
-        print str(e)
-        return str(e)
+        print str(info)
+        return str(info)
 
     return "1\n"
 
@@ -216,6 +245,10 @@ def register():
 @APP.route("/del_user", methods=['POST'])
 @crossdomain(origin='*')
 def del_user():
+    """
+    delete a user information
+
+    """
     username = request.form['username']
     try:
         conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
@@ -225,24 +258,28 @@ def del_user():
         conn.commit()
         cur.close()
         conn.close()
-    except Exception as e:
+    except Exception as info:
         conn.rollback()
         print "can not write record to database"
-        print str(e)
-        return str(e)
+        print str(info)
+        return str(info)
     return "1\n"
 
 
 @APP.route("/login", methods=['POST'])
 @crossdomain(origin='*')
 def login():
+    """
+    verify user information and jump to main page if success
+
+    """
     username = request.form['username']
     password = request.form['password']
     try:
         newcurs = g.conn.execute("""SELECT * FROM user_info WHERE name = '{}'""".format(username))
-    except Exception as e:
+    except Exception as info:
         print "can not read record from database"
-        return str(e)
+        return str(info)
 
     for result in newcurs:
         correct = result['pass']
@@ -256,15 +293,11 @@ def login():
 @APP.route("/strategy", methods=['GET'])
 @crossdomain(origin='*')
 def strategy():
-    global BASE
-    print BASE
-    if BASE == 0:
-        return "Waiting to Start !"
-    elif BASE > 0:
-        return "We will sperated your $ %s order evenly into" \
-               " 100 each and sell them every 5 second" % BASE
-    else:
-        "Please try positive input !"
+    """
+    show user how the strategy of trading is being calculated
+
+    """
+    return "a database need to added"
 
 
 if __name__ == "__main__":

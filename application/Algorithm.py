@@ -171,16 +171,16 @@ class UseThread(threading.Thread):
             connection.rollback()
 
     @staticmethod
-    def quote_info(query):
+    def quote_info():
         """
         send request string to the JP server and get market information
 
         Args:
-            query: request string
 
         Returns:
             JSON object of market information
         """
+        query = "http://localhost:8080/query?id={}"
         try:
             quote = json.loads(urllib2.urlopen(query.format(1)).read())
         except:
@@ -189,7 +189,7 @@ class UseThread(threading.Thread):
         return quote
 
     @staticmethod
-    def make_order(order_size, market_info, order_discount, order_query):
+    def make_order(order_size, market_info, order_discount):
         """
         calculate time interval for next child order
 
@@ -197,11 +197,11 @@ class UseThread(threading.Thread):
             order_size: order size of this order
             market_info: market information JSON object
             order_discount: order discount percentage
-            order_query: order request string
 
         Returns:
             JSON object of order information
         """
+        order_query = "http://localhost:8080/order?id={}&side=sell&qty={}&price={}"
         try:
             order_price = float(market_info['top_bid']['price']) * (100 - order_discount) * 0.01
             order_args = (order_size, order_price)
@@ -222,8 +222,6 @@ class UseThread(threading.Thread):
         Returns:
             none
         """
-        query = "http://localhost:8080/query?id={}"
-        order_query = "http://localhost:8080/order?id={}&side=sell&qty={}&price={}"
 
         order_discount = 10
         order_size = 30
@@ -240,23 +238,23 @@ class UseThread(threading.Thread):
         time_wait = 0
 
         while inventory > 0:
-            market_info = self.quote_info(query)
+            market_info = self.quote_info()
             while True:
                 if self.cal_current_time(market_info['timestamp']) + 0.5 > time_wait:
                     break
                 else:
-                    market_info = self.quote_info(query)
+                    market_info = self.quote_info()
 
             while 1:
                 # time.sleep(0.2)
                 # make order
-                order = self.make_order(order_size, market_info, order_discount, order_query)
+                order = self.make_order(order_size, market_info, order_discount)
 
                 if order is None:
                     self.insert_trans(
                         trans_id, "failure occurred, recalculate strategy", None, cur, conn)
                     trans_id += 1
-                    market_info = self.quote_info(query)
+                    market_info = self.quote_info()
                     current_time = self.cal_current_time(market_info['timestamp'])
                     # self.insert_info(info_id, time_mark, "Quoted at %s" % price, cur, conn)
                     # info_id += 1

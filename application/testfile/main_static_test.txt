@@ -163,3 +163,121 @@ Your code has been rated at 7.33/10 (previous run: 7.33/10, +0.00)
 
 
 
+After fixed:
+
+
+************* Module main
+R: 27, 0: Too many arguments (6/5) (too-many-arguments)
+E: 50,18: Instance of 'int' has no 'total_seconds' member (no-member)
+W:115,11: Catching too general exception Exception (broad-except)
+W:133,11: Catching too general exception Exception (broad-except)
+W:171,11: Catching too general exception Exception (broad-except)
+W:192,11: Catching too general exception Exception (broad-except)
+W:236,11: Catching too general exception Exception (broad-except)
+W:261,11: Catching too general exception Exception (broad-except)
+W:280,11: Catching too general exception Exception (broad-except)
+
+
+Report
+======
+151 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|method   |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|function |15     |15         |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    Algorithm (main)
+    flask (main)
+    psycopg2 (main)
+    sqlalchemy (main)
+    werkzeug
+      \-security (main)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |174    |56.31 |183      |-9.00      |
++----------+-------+------+---------+-----------+
+|docstring |89     |28.80 |90       |-1.00      |
++----------+-------+------+---------+-----------+
+|comment   |5      |1.62  |5        |=          |
++----------+-------+------+---------+-----------+
+|empty     |41     |13.27 |41       |=          |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |1        |-1.00      |
++-----------+-------+---------+-----------+
+|refactor   |1      |1        |=          |
++-----------+-------+---------+-----------+
+|warning    |7      |10       |-3.00      |
++-----------+-------+---------+-----------+
+|error      |1      |1        |=          |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-------------------+------------+
+|message id         |occurrences |
++===================+============+
+|broad-except       |7           |
++-------------------+------------+
+|too-many-arguments |1           |
++-------------------+------------+
+|no-member          |1           |
++-------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 9.14/10 (previous run: 8.93/10, +0.21)
+
+The reason we cannot fix the no exception specified warning is that the error is sent by JP server so the only thing we can do is catch the error and print it out. If we specify the exception types and JP server change the exception type, we might not catch that exception and cause crash of software
+The too many arguments is caused by tracing the change of states while trading happened. Currently we are not able to decrease number of variables.
+No-member problem should be ignored since this is caused by pylint does not get variable is not int
