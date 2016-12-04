@@ -2,6 +2,13 @@ code inspection report
 Write a document that identifies exactly which code constitutes each component (e.g., which files), and who the reader and recorder were for each component. 
 describing the new problems found.
 
+1. Significant component (Linnan, Jiabei)
+
+There are some difficulties with connecting the database Mongo to Meteor. There is a lag resulting in displaying child orders on the front end not in the correct intervals. The child orders appear in a group of 3 instead of appearing one by one in the provided intervals. Unfortunately, this problem is difficult to overcome since the code is correct and the technology is lagging. A potential solution to lower these inconsistencies would be to send an http request to Mongo which would likely speed everything up.
+
+2. Significant component (Yimin, Darren)
+
+
 
 Demo update
 Describe what you were able to demo and record any problems that arose, any recommendations from your mentor, etc. on github.  Since you should have accumulated multiple issues by now, tell us which specific issues stem from this demo and how to find them. 
