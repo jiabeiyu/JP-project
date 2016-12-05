@@ -1,0 +1,161 @@
+----- FILE  :  E:\New folder (2)\time-line-scale.js -----
+Line 1, E:0005: Illegal tab in whitespace before "var"
+Line 2, E:0005: Illegal tab in whitespace before "var"
+Line 3, E:0005: Illegal tab in whitespace before "function"
+Line 4, E:0005: Illegal tab in whitespace before "              "
+Line 4, E:0001: Extra space at end of line
+Line 5, E:0005: Illegal tab in whitespace before "$.ajax"
+Line 6, E:0005: Illegal tab in whitespace before "type"
+Line 6, E:0131: Single-quoted string preferred over double-quoted string.
+Line 7, E:0005: Illegal tab in whitespace before "url"
+Line 7, E:0131: Single-quoted string preferred over double-quoted string.
+Line 8, E:0005: Illegal tab in whitespace before "data"
+Line 9, E:0005: Illegal tab in whitespace before "dataType"
+Line 10, E:0005: Illegal tab in whitespace before "success"
+Line 10, E:0002: Missing space before "{"
+Line 11, E:0005: Illegal tab in whitespace before "var"
+Line 11, E:0002: Missing space before "="
+Line 11, E:0002: Missing space after "="
+Line 12, E:0005: Illegal tab in whitespace before "var"
+Line 12, E:0002: Missing space before "="
+Line 12, E:0002: Missing space after "="
+Line 12, E:0002: Missing space after ","
+Line 12, E:0131: Single-quoted string preferred over double-quoted string.
+Line 13, E:0005: Illegal tab in whitespace before "var"
+Line 13, E:0002: Missing space before "="
+Line 13, E:0002: Missing space after "="
+Line 14, E:0005: Illegal tab in whitespace before "             "
+Line 14, E:0001: Extra space at end of line
+Line 15, E:0005: Illegal tab in whitespace before "config.data.datasets"
+Line 16, E:0005: Illegal tab in whitespace before "x"
+Line 17, E:0005: Illegal tab in whitespace before "y"
+Line 18, E:0005: Illegal tab in whitespace before "}"
+Line 18, E:0005: Illegal tab in whitespace after ";"
+Line 18, E:0001: Extra space at end of line
+Line 19, E:0005: Illegal tab in whitespace before "window.myLine.update"
+Line 20, E:0005: Illegal tab in whitespace before "             "
+Line 20, E:0001: Extra space at end of line
+Line 21, E:0005: Illegal tab in whitespace before "             "
+Line 21, E:0001: Extra space at end of line
+Line 22, E:0005: Illegal tab in whitespace before "             "
+Line 22, E:0001: Extra space at end of line
+Line 23, E:0005: Illegal tab in whitespace before "}"
+Line 24, E:0005: Illegal tab in whitespace before "error"
+Line 24, E:0002: Missing space before "{"
+Line 25, E:0005: Illegal tab in whitespace before "}"
+Line 26, E:0005: Illegal tab in whitespace before "             "
+Line 26, E:0001: Extra space at end of line
+Line 27, E:0005: Illegal tab in whitespace before "}"
+Line 28, E:0005: Illegal tab in whitespace before "             "
+Line 28, E:0001: Extra space at end of line
+Line 29, E:0005: Illegal tab in whitespace before "             "
+Line 29, E:0001: Extra space at end of line
+Line 30, E:0005: Illegal tab in whitespace before "}"
+Line 31, E:0005: Illegal tab in whitespace before "             "
+Line 31, E:0001: Extra space at end of line
+Line 32, E:0005: Illegal tab in whitespace before "             "
+Line 32, E:0001: Extra space at end of line
+Line 33, E:0005: Illegal tab in whitespace before "             "
+Line 33, E:0001: Extra space at end of line
+Line 34, E:0005: Illegal tab in whitespace before "function"
+Line 35, E:0005: Illegal tab in whitespace before "return"
+Line 36, E:0005: Illegal tab in whitespace before "}"
+Line 37, E:0005: Illegal tab in whitespace before "function"
+Line 38, E:0005: Illegal tab in whitespace before "return"
+Line 39, E:0005: Illegal tab in whitespace before "}"
+Line 40, E:0005: Illegal tab in whitespace before "function"
+Line 41, E:0005: Illegal tab in whitespace before "return"
+Line 41, E:0110: Line too long (128 characters).
+Line 42, E:0005: Illegal tab in whitespace before "}"
+Line 43, E:0005: Illegal tab in whitespace before "function"
+Line 44, E:0005: Illegal tab in whitespace before "return"
+Line 45, E:0005: Illegal tab in whitespace before "}"
+Line 46, E:0005: Illegal tab in whitespace before "function"
+Line 47, E:0005: Illegal tab in comment "                       var minutes = Math.round(Math.random() * 60);"
+Line 48, E:0005: Illegal tab in whitespace before "return"
+Line 49, E:0005: Illegal tab in whitespace before "}"
+Line 50, E:0005: Illegal tab in whitespace before "             "
+Line 50, E:0001: Extra space at end of line
+Line 51, E:0005: Illegal tab in whitespace before "             "
+Line 51, E:0001: Extra space at end of line
+Line 52, E:0005: Illegal tab in whitespace before "function"
+Line 53, E:0005: Illegal tab in whitespace before "return"
+Line 54, E:0005: Illegal tab in whitespace before "}"
+Line 55, E:0005: Illegal tab in whitespace before "             "
+Line 55, E:0001: Extra space at end of line
+Line 56, E:0005: Illegal tab in whitespace before "var"
+Line 57, E:0005: Illegal tab in whitespace before "type"
+Line 58, E:0005: Illegal tab in whitespace before "data"
+Line 59, E:0005: Illegal tab in whitespace before "labels"
+Line 60, E:0005: Illegal tab in whitespace before "datasets"
+Line 61, E:0005: Illegal tab in whitespace before "label"
+Line 61, E:0131: Single-quoted string preferred over double-quoted string.
+Line 62, E:0005: Illegal tab in whitespace before "data"
+Line 63, E:0005: Illegal tab in whitespace before ","
+Line 63, E:0120: Binary operator must go on previous line ","
+Line 64, E:0005: Illegal tab in whitespace before "fill"
+Line 65, E:0005: Illegal tab in whitespace before "}"
+Line 66, E:0005: Illegal tab in whitespace before "}"
+Line 67, E:0005: Illegal tab in whitespace before "options"
+Line 68, E:0005: Illegal tab in whitespace before "responsive"
+Line 69, E:0002: Missing space after ":"
+Line 70, E:0002: Missing space after ":"
+Line 71, E:0002: Missing space after ":"
+Line 71, E:0131: Single-quoted string preferred over double-quoted string.
+Line 73, E:0005: Illegal tab in whitespace before "scales"
+Line 74, E:0005: Illegal tab in whitespace before "xAxes"
+Line 75, E:0005: Illegal tab in whitespace before "type"
+Line 75, E:0131: Single-quoted string preferred over double-quoted string.
+Line 76, E:0005: Illegal tab in whitespace before "time"
+Line 77, E:0005: Illegal tab in whitespace before "tooltipFormat"
+Line 78, E:0005: Illegal tab in whitespace before "minUnit"
+Line 78, E:0002: Missing space after ":"
+Line 78, E:0005: Illegal tab in whitespace after ","
+Line 78, E:0001: Extra space at end of line
+Line 79, E:0005: Illegal tab in whitespace before "displayFormats"
+Line 80, E:0005: Illegal tab in whitespace before "second"
+Line 81, E:0005: Illegal tab in whitespace before "}"
+Line 81, E:0005: Illegal tab in whitespace after "}"
+Line 81, E:0005: Illegal tab in comment ",                                                      "
+Line 81, E:0001: Extra space at end of line
+Line 82, E:0005: Illegal tab in comment "                                                       unit: 'second',"
+Line 83, E:0005: Illegal tab in whitespace before "//"
+Line 84, E:0005: Illegal tab in whitespace before "}"
+Line 85, E:0005: Illegal tab in whitespace before "scaleLabel"
+Line 86, E:0005: Illegal tab in whitespace before "display"
+Line 87, E:0005: Illegal tab in whitespace before "labelString"
+Line 88, E:0005: Illegal tab in whitespace before "}"
+Line 89, E:0005: Illegal tab in whitespace before "}"
+Line 89, E:0001: Extra space before "]"
+Line 90, E:0005: Illegal tab in whitespace before "yAxes"
+Line 91, E:0005: Illegal tab in whitespace before "scaleLabel"
+Line 92, E:0005: Illegal tab in whitespace before "display"
+Line 93, E:0005: Illegal tab in whitespace before "labelString"
+Line 94, E:0005: Illegal tab in whitespace before "}"
+Line 95, E:0005: Illegal tab in whitespace before "}"
+Line 96, E:0005: Illegal tab in whitespace before "}"
+Line 97, E:0005: Illegal tab in whitespace before "}"
+Line 98, E:0005: Illegal tab in whitespace before "}"
+Line 99, E:0005: Illegal tab in whitespace before "$.each"
+Line 100, E:0005: Illegal tab in whitespace before "dataset.borderColor"
+Line 101, E:0005: Illegal tab in whitespace before "dataset.backgroundColor"
+Line 102, E:0005: Illegal tab in whitespace before "dataset.pointBorderColor"
+Line 103, E:0005: Illegal tab in whitespace before "dataset.pointBackgroundColor"
+Line 104, E:0005: Illegal tab in whitespace before "dataset.pointBorderWidth"
+Line 105, E:0005: Illegal tab in whitespace before "}"
+Line 106, E:0005: Illegal tab in whitespace before "window.onload"
+Line 106, E:0220: No docs found for member 'window.onload'
+Line 107, E:0005: Illegal tab in whitespace before "var"
+Line 107, E:0131: Single-quoted string preferred over double-quoted string.
+Line 107, E:0131: Single-quoted string preferred over double-quoted string.
+Line 108, E:0005: Illegal tab in whitespace before "window.myLine"
+Line 109, E:0005: Illegal tab in whitespace before "}"
+Found 151 errors, including 0 new errors, in 1 file (0 files OK).
+
+
+After fixed:
+
+1 files checked, no errors found.
+
+
+We have fixed all the error occurred before instead of Illegal tab. Because js is inserted inside the html file

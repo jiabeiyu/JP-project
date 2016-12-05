@@ -2,13 +2,39 @@ code inspection report
 Write a document that identifies exactly which code constitutes each component (e.g., which files), and who the reader and recorder were for each component. 
 describing the new problems found.
 
-1. Significant component (Linnan, Jiabei)
+1. Significant component (Linnan, Jiabei) Algorithm.py
 
-There are some difficulties with connecting the database Mongo to Meteor. There is a lag resulting in displaying child orders on the front end not in the correct intervals. The child orders appear in a group of 3 instead of appearing one by one in the provided intervals. Unfortunately, this problem is difficult to overcome since the code is correct and the technology is lagging. A potential solution to lower these inconsistencies would be to send an http request to Mongo which would likely speed everything up.
+Notes:
 
-2. Significant component (Yimin, Darren)
+1. Improve trading algorithm
+	find out better staring trading amount
+	current time interval algorithm can be improved by dynamically change time interval according to the amount of order and time left.
+	The algorithm cannot handle more than one trade each time
+2. Improve data base insertion
+	make information insert into database in chronological order. 
+	The total selling amount is not contained inside the information table
+3. Adding Exception when handling failure of an order.
 
+Not fixed:
 
+The algorithm cannot handle more than one trade each time. We ran out of time finish this problem since we cannot figure out how to handle thread properly.
+
+Fixed:
+
+the starting trading amount is set to 30
+the trading amount and time interval are changed according to the amount of order and time left.
+make information insert into database in chronological order. 
+The total selling amount is not contained inside the information table
+Exception handled when an order failed.
+
+2. Significant component (Yimin, Darren) line-time-scale.htmlNotes:Should access trading page only when user logged in. For the time being, the user can directly access the trade page without log in to our trade platform. Although the log in page works correctly, the user can simply skip that page. I suggest solving this problem by using session in the backend. The market information should be scaled properly. With the chart get updated continously by new data, the chart becomes more and more crowded so that we can not read the data.The order of trading imformation need to be in the time sequence. Now it seems to be in an abitrary order so it's hard to see.Not fixed:The scale problem. 	As we need to check the API of the chart and to figure out how it works, we decide to put if off.Fixed:The order of information.	That results from a small bug. We forgot to point out the sort criterion explicitly. This problem is solved just by adding one line of code.The login problem.	Before getting into the trading page, we first check whether the user's cookie is stored in the session. If not, we redirect to the login page for the user.
 
 Demo update
-Describe what you were able to demo and record any problems that arose, any recommendations from your mentor, etc. on github.  Since you should have accumulated multiple issues by now, tell us which specific issues stem from this demo and how to find them. 
+
+We are able to show our new layout of our webpage and running new algorithm which can handle up to 1000000 amount of order. User need to login before they go to trading pages. If failure occur, the algorithm will recalculate the strategy and continue trading. The issue we finished is showed in our trello: https://trello.com/b/hnHr3qKM/second-iteration.
+
+Our mentor gave us additional suggestions:
+1. adding continuous integration for testing.
+2. Able to dealing multiple orders
+3. Setting maximum amount user can enter.
+4. fix the scale of the market price chart

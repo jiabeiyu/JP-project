@@ -82,7 +82,7 @@ class UseThread(threading.Thread):
         try:
             conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
             print 'get connect'
-        except:
+        except Exception:
             print "I am unable to connect to the database"
             return 1
         return conn
@@ -106,7 +106,7 @@ class UseThread(threading.Thread):
             connection.commit()
             cursor.execute(delet2)
             connection.commit()
-        except:
+        except Exception:
             print "Can't delete data from database"
             connection.rollback()
 
@@ -132,7 +132,7 @@ class UseThread(threading.Thread):
         try:
             cur.execute(query)
             connection.commit()
-        except:
+        except Exception:
             print "Can't insert data into market information form"
             connection.rollback()
 
@@ -166,7 +166,7 @@ class UseThread(threading.Thread):
         try:
             cur.execute(query)
             connection.commit()
-        except:
+        except Exception:
             print "Can't insert data into transition history form"
             connection.rollback()
 
@@ -183,7 +183,7 @@ class UseThread(threading.Thread):
         query = "http://localhost:8080/query?id={}"
         try:
             quote = json.loads(urllib2.urlopen(query.format(1)).read())
-        except:
+        except Exception:
             print "Server error"
             sys.exit()
         return quote
@@ -208,7 +208,7 @@ class UseThread(threading.Thread):
             url = order_query.format(2, *order_args)
             order = json.loads(urllib2.urlopen(url).read())
             print order
-        except:
+        except Exception:
             print "price or order size too high"
             order = None
         return order

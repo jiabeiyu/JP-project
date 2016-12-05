@@ -1,0 +1,61 @@
+E:\New folder (2)>gjslint login.js
+----- FILE  :  E:\New folder (2)\login.js -----
+Line 1, E:0005: Illegal tab in whitespace before "function"
+Line 2, E:0005: Illegal tab in whitespace before "{"
+Line 3, E:0005: Illegal tab in whitespace before "var"
+Line 3, E:0002: Missing space before "="
+Line 3, E:0002: Missing space after "="
+Line 3, E:0131: Single-quoted string preferred over double-quoted string.
+Line 4, E:0005: Illegal tab in whitespace before "var"
+Line 4, E:0002: Missing space before "="
+Line 4, E:0002: Missing space after "="
+Line 4, E:0131: Single-quoted string preferred over double-quoted string.
+Line 5, E:0005: Illegal tab in whitespace before "$.ajax"
+Line 6, E:0005: Illegal tab in whitespace before "type"
+Line 6, E:0131: Single-quoted string preferred over double-quoted string.
+Line 7, E:0005: Illegal tab in whitespace before "url"
+Line 7, E:0131: Single-quoted string preferred over double-quoted string.
+Line 8, E:0005: Illegal tab in whitespace before "data"
+Line 8, E:0131: Single-quoted string preferred over double-quoted string.
+Line 9, E:0005: Illegal tab in whitespace before """
+Line 9, E:0131: Single-quoted string preferred over double-quoted string.
+Line 10, E:0005: Illegal tab in whitespace before "dataType"
+Line 11, E:0005: Illegal tab in whitespace before "success"
+Line 12, E:0005: Illegal tab in whitespace before "error"
+Line 12, E:0002: Missing space before "{"
+Line 13, E:0005: Illegal tab in whitespace before "$.messager.alert"
+Line 14, E:0005: Illegal tab in whitespace before "}"
+Line 15, E:0005: Illegal tab in whitespace before "}"
+Line 16, E:0005: Illegal tab in whitespace before "}"
+Line 17, E:0005: Illegal tab in whitespace before "function"
+Line 17, E:0002: Missing space before "{"
+Line 18, E:0005: Illegal tab in whitespace before "var"
+Line 18, E:0002: Missing space before "="
+Line 18, E:0002: Missing space after "="
+Line 19, E:0005: Illegal tab in whitespace before "if"
+Line 19, E:0002: Missing space before "=="
+Line 19, E:0002: Missing space after "=="
+Line 19, E:0131: Single-quoted string preferred over double-quoted string.
+Line 20, E:0005: Illegal tab in whitespace before "self.location"
+Line 20, E:0002: Missing space before "="
+Line 20, E:0002: Missing space after "="
+Line 20, E:0131: Single-quoted string preferred over double-quoted string.
+Line 20, E:0013: Redundant semicolon
+Line 20, E:0001: Extra space at end of line
+Line 21, E:0005: Illegal tab in whitespace before "}"
+Line 22, E:0005: Illegal tab in whitespace before "else"
+Line 22, E:0002: Missing space before "{"
+Line 23, E:0005: Illegal tab in whitespace before "$.messager.alert"
+Line 23, E:0002: Missing space after ","
+Line 23, E:0131: Single-quoted string preferred over double-quoted string.
+Line 24, E:0005: Illegal tab in whitespace before "}"
+Line 25, E:0005: Illegal tab in whitespace before "}"
+Line 25, E:0300: File does not end with new line.  (    })
+Found 51 errors, including 0 new errors, in 1 file (0 files OK).
+
+
+After fixed:
+
+1 files checked, no errors found.
+
+We have fixed all the error occurred before instead of Illegal tab. Because js is inserted inside the html file
