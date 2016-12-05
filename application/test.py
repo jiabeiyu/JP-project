@@ -4,7 +4,6 @@ import unittest
 
 
 class FlaskrTestCase(unittest.TestCase):
-
     def setUp(self):
         # DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
         # ENGINE = create_engine(DATABASEURI)
@@ -44,7 +43,7 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_get_price(self):
         rv = self.app.get('/get_price')
-        print rv.data
+        print "sccessfully get test"
 
     def register(self, username, password):
         return self.app.post('/register', data=dict(
@@ -65,11 +64,32 @@ class FlaskrTestCase(unittest.TestCase):
             quantity=100,
         ), follow_redirects=True)
         assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=1000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=10000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=100000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=1000000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=100,
+        ), follow_redirects=True)
+        assert '1' in rv.data
 
     def test_history(self):
         rv = self.app.get('/b')
-        print rv.data
+        print "sccessfully get history"
         assert '1' in rv.data
+
 
 if __name__ == '__main__':
     unittest.main()
