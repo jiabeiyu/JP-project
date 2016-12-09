@@ -137,12 +137,12 @@ class UseThread(threading.Thread):
             connection.rollback()
 
     @staticmethod
-    def insert_trans(data_id, result, order_info, cur, connection):
+    def insert_trans(sell_info, result, order_info, cur, connection):
         """
         calculate time interval for next child order
 
         Args:
-            data_id: database id
+            sell_info: database id and selling value
             result: string of order status
             order_info: selling order information
             cur: database cursor
@@ -159,15 +159,17 @@ class UseThread(threading.Thread):
             time_stamp = order_info['timestamp']
             price = order_info['avg_price']
             size = order_info['qty']
-        query = "INSERT INTO transact (id, time_quote, result, price, size) " \
-                "VALUES ('{}', '{}', '{}', '{}', '{}');". \
-            format(data_id, time_stamp, result, price, size)
+        query = "INSERT INTO transact (id, time_quote, result, price, size, amount, value) " \
+                "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');". \
+            format(sell_info['trans_id'], time_stamp, result, price, size,
+                   sell_info['total_sell'], sell_info['sum_value'])
         # print query
         try:
             cur.execute(query)
             connection.commit()
-        except Exception:
+        except Exception as info:
             print "Can't insert data into transition history form"
+            print info
             connection.rollback()
 
     @staticmethod
@@ -223,23 +225,24 @@ class UseThread(threading.Thread):
             none
         """
 
+        inventory = int(self.quantity)
+        if inventory < 30:
+            order_size = inventory
+        else:
+            order_size = 30
         order_discount = 10
-        order_size = 30
 
         conn = self.connect_database()
         cur = conn.cursor()
         self.database_cleanup(conn, cur)
-        # info_id = 0
-        trans_id = 0
 
-        inventory = self.quantity
-        total_sell = 0
-        sum_of = 0
+        # info_id = 0
+        sell_info = {'trans_id': 1, 'total_sell': 0, 'sum_value': 0}
         time_wait = 0
 
         while inventory > 0:
             market_info = self.quote_info()
-            while True:
+            while True:  # 0.5 is estimation time of execution of one order
                 if self.cal_current_time(market_info['timestamp']) + 0.5 > time_wait:
                     break
                 else:
@@ -252,8 +255,9 @@ class UseThread(threading.Thread):
 
                 if order is None:
                     self.insert_trans(
-                        trans_id, "failure occurred, recalculate strategy", None, cur, conn)
-                    trans_id += 1
+                        sell_info, "failure occurred, recalculate strategy", None, cur, conn)
+
+                    sell_info['trans_id'] += 1
                     market_info = self.quote_info()
                     current_time = self.cal_current_time(market_info['timestamp'])
                     # self.insert_info(info_id, time_mark, "Quoted at %s" % price, cur, conn)
@@ -261,19 +265,21 @@ class UseThread(threading.Thread):
                     if order_size > 10:
                         order_size -= 10
                 else:
-                    self.insert_trans(trans_id, "success", order, cur, conn)
-                    trans_id += 1
-
                     # record sell price and add total sell amount and revenue
-                    sum_of += float(order['avg_price']) * order_size
-                    total_sell += order_size
+                    sell_info['total_sell'] += order_size
+                    sell_info['sum_value'] += float(order['avg_price']) * order_size
+
+                    self.insert_trans(sell_info, "success", order, cur, conn)
+                    sell_info['trans_id'] += 1
 
                     # change inventory amount and recalculate time
                     inventory -= order_size
                     current_time = self.cal_current_time(order['timestamp'])
                     break
 
-            time_interval = self.cal_interval_time(current_time, inventory, order_size)
+            if inventory == 0:
+                break
+            time_interval = self.cal_interval_time(current_time, float(inventory), float(order_size))
             if time_interval < 2:
                 order_discount += 1
                 order_size += 50
@@ -287,10 +293,13 @@ class UseThread(threading.Thread):
                 order_size = inventory
 
         print "this is total sell",
-        print total_sell
+        print sell_info['total_sell']
         print "this is ave price",
-        avg_price = sum_of / total_sell
+        if sell_info['total_sell'] > 0:
+            avg_price = sell_info['sum_value'] / sell_info['total_sell']
+        else:
+            avg_price = 0
         print avg_price
-        result_order = "Finished with average price" + str(avg_price)
-        self.insert_trans(trans_id, result_order, None, cur, conn)
+        result_order = "Finished with average price " + str(avg_price)
+        self.insert_trans(sell_info, result_order, None, cur, conn)
         # Repeat the strategy until we run out of shares.

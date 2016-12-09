@@ -17,11 +17,39 @@ from flask import Flask, request, render_template, g, \
     jsonify, make_response, current_app  # , redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from Algorithm import UseThread
+import signal
+import sys
+
 
 APP = Flask(__name__)
 
 DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
 ENGINE = create_engine(DATABASEURI)
+
+
+def exit_gracefully(signum, frame):
+    """
+        This is function is design to handle crtl+c exit
+
+        Args:
+            signum
+            frame
+
+        Returns:
+            none
+        """
+    # restore the original signal handler as otherwise evil things will happen
+    # in raw_input when CTRL+C is pressed, and our signal handler is not re-entrant
+    signal.signal(signal.SIGINT, original_sigint)
+    try:
+        if raw_input("\nReally quit? (y/n)> ").lower().startswith('y'):
+            sys.exit(1)
+
+    except KeyboardInterrupt:
+        print("\nOK, quitting")
+        sys.exit(1)
+    # restore the exit gracefully handler here
+    signal.signal(signal.SIGINT, exit_gracefully)
 
 
 def crossdomain(origin=None, methods=None, headers=None,
@@ -195,8 +223,9 @@ def handle_b():
 
     info = []
     for result in newcurs:
-        temp = {'a': result['time_quote'], 'b': result['result'],
-                'c': result['price'], 'd': result['size']}
+        temp = {'z': result['id'], 'a': result['time_quote'], 'b': result['result'],
+                'c': result['price'], 'd': result['size'], 'e': result['amount'],
+                'f': result['value']}
         info.insert(0, temp)
     newcurs.close()
     return jsonify(rows=info)
@@ -210,7 +239,9 @@ def handle_submit():
 
     """
     lang = request.args.get('quantity', 0, type=float)
-    UseThread(lang).start()
+    temp = UseThread(lang)
+    temp.setDaemon(True)
+    temp.start()
     print lang
     return "1\n"
 
@@ -297,11 +328,13 @@ def strategy():
     show user how the strategy of trading is being calculated
 
     """
-    return "a database need to added"
+    return "start trading"
 
 
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run
+    original_sigint = signal.getsignal(signal.SIGINT)
+    signal.signal(signal.SIGINT, exit_gracefully)
     reload(sys)
     sys.setdefaultencoding('utf8')
 

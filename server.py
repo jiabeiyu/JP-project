@@ -252,7 +252,7 @@ class App(object):
             best bid and ask and their sizes.
         """
         t, bids, asks = self._current_book.next()
-        print 'Query received @ t%s' % t
+        # print 'Query received @ t%s' % t
         return {
             'id': x and x.get('id', None),
             'timestamp': str(t),

@@ -42,15 +42,17 @@
 	
 	<br/>
 	
-	<table id="order" class="easyui-datagrid" title="Order" style="width:800px;height:250px" 
+	<table id="order" class="easyui-datagrid" title="Order" style="width:900px;height:250px" 
 			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/b',method:'get',loadMsg:''">
 		<thead>
 			<tr>
+				<th data-options="field:'z',width:50">Time</th>
 				<th data-options="field:'a',width:200">Time</th>
 				<th data-options="field:'b',width:250">Result</th>
-				<th data-options="field:'c',width:120">Price</th>
+				<th data-options="field:'c',width:60">Price</th>
 				<th data-options="field:'d',width:80">Order Size</th>
-
+				<th data-options="field:'e',width:100">Sold Num</th>
+				<th data-options="field:'f',width:100">Sold Value</th>
 			</tr>
 		</thead>
 	</table>

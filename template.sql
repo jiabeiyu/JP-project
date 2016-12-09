@@ -11,7 +11,9 @@ id INT,
 time_quote VARCHAR(100),
 result VARCHAR(50),
 price VARCHAR(30),
-size VARCHAR(30));
+size VARCHAR(30),
+amount INT,
+value REAL);
 
 
 CREATE TABLE strat(
