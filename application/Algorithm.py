@@ -187,7 +187,7 @@ class UseThread(threading.Thread):
             quote = json.loads(urllib2.urlopen(query.format(1)).read())
         except Exception:
             print "Server error"
-            sys.exit()
+            # sys.exit()
         return quote
 
     @staticmethod
@@ -294,6 +294,8 @@ class UseThread(threading.Thread):
 
         print "this is total sell",
         print sell_info['total_sell']
+        print "this is total value",
+        print sell_info['sum_value']
         print "this is ave price",
         if sell_info['total_sell'] > 0:
             avg_price = sell_info['sum_value'] / sell_info['total_sell']
