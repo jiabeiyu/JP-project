@@ -1,1 +1,1 @@
-python ./application/main.py
+python ./application/test.py

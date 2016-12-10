@@ -10,6 +10,8 @@
 	<script type="text/javascript" src="../static/front-end/easyui/jquery.easyui.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 	<script src="../static/dist/Chart.bundle.js"></script>
+	<script src="../static/dist/hammer.min.js"></script>
+	<script src="../static/dist/chartjs-plugin-zoom.js"></script>
 	<style>
     canvas {
         -moz-user-select: none;
@@ -27,7 +29,9 @@
 
 		<div style="width:75%;">
 		<canvas id="canvas"></canvas>
-	</div>
+		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="resetZoom()">Reset Zoom</a>
+
+		</div>
 
 
 	<!-- <table id="market" class="easyui-datagrid" title="Market" style="width:800px;height:250px" 
@@ -43,16 +47,17 @@
 	<br/>
 	
 	<table id="order" class="easyui-datagrid" title="Order" style="width:900px;height:250px" 
-			data-options="singleSelect:true,collapsible:true,url:'http://localhost:8000/b',method:'get',loadMsg:''">
+			data-options="singleSelect:true,pagination:true,collapsible:true,url:'http://localhost:8000/b',method:'get',loadMsg:''">
 		<thead>
 			<tr>
-				<th data-options="field:'z',width:50">Time</th>
+				<th data-options="field:'z',width:50">ID</th>
 				<th data-options="field:'a',width:200">Time</th>
-				<th data-options="field:'b',width:250">Result</th>
+				<th data-options="field:'b',width:70">Result</th>
 				<th data-options="field:'c',width:60">Price</th>
 				<th data-options="field:'d',width:80">Order Size</th>
 				<th data-options="field:'e',width:100">Sold Num</th>
 				<th data-options="field:'f',width:100">Sold Value</th>
+				<th data-options="field:'g',width:100">Average</th>
 			</tr>
 		</thead>
 	</table>
@@ -61,15 +66,21 @@
 
 	
 	<label class="lbInfo">Quantity: </label> 
-	<input id="quantity" class="easyui-numberbox" precision="2" value="0" />
+
+	<input id="quantity" class="easyui-numberbox" precision="0" value="0" />
 	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submit()">Submit</a>
 	<br>
-	<label id='record'>~</label>
+	<label id='record'>I'm not trading</label>
+	<br>
+	<label id='status'>Online</label>
 
 </body>
 <script type="text/javascript">
 	var timer = setInterval(myTimer, 1000);
-	update_textbox();
+	var morgan_server_status = true;
+	var platform_server_status = true;
+
+	//update_textbox();
 	
 	
 	function update_textbox(){
@@ -91,13 +102,51 @@
 	function myTimer() {
 		// $("#market").datagrid("reload"); 
 		$("#order").datagrid("reload"); 
+/*		
+		$.ajax({
+		type: "GET",
+		url: "http://localhost:8000/c",
+		data: {},
+		dataType: 'text',
+		success: function(msgResult){
+			var j=JSON.parse(msgResult).rows;
+			var length=j.length;
+//			for (var i=length-1;i>-1;--i){
+/*
+				$('#order').datagrid('appendRow',{'z': 'id', 'a': 'time_quote', 'b': 'result',
+                'c': 'price', 'd': 'size', 'e': 'amount',
+                'f': 'value'});
+                */
+     //            if (length>0)
+				 // $('#order').datagrid('insertRow',{index:0,row:j[0]} );
+//			}
+/*
+			$('#order').datagrid('appendRow',{
+			name: 'new name',
+			age: 30,
+			note: 'some messages'
 
+		},
+
+		error: function(XMLHttpRequest, textStatus, errorThrown){
 		}
+		
+		});	
+*/
+	}
 
 	
 	function submit() {
+		var value=document.getElementById("quantity").value;
+		if (value<0 || value>1000000)
+		{
+			$.messager.alert('Input rejected',"Amout out of range:[1,1000000]"); 			
+		}
+		else{
 		sendpost(document.getElementById("quantity").value);
 		update_textbox();
+		$('#order').datagrid('reload');
+		}
 	}
 	
 	function success_handler(msgResult){
@@ -129,14 +178,25 @@
 
 		var timer2 = setInterval(myTimer2, 1000);
 		function myTimer2() {
+
 		
 		$.ajax({
 		type: "GET",
 		url: "http://localhost:8000/get_price",
 		data: {},
 		dataType: 'text',
-		success: function(msgReuslt){
-		var m=JSON.parse(msgReuslt).rows;
+		success: function(msgResult){
+		
+		if (msgResult=="urlopen_error")
+		{
+			document.getElementById('status').innerHTML = "Cannot connect to the stock market";			
+			return;
+
+		}
+		
+		
+		
+		var m=JSON.parse(msgResult).rows;
 		var time=moment(m.time,"YYYY-MM-DD HH:mm:ss:SSSSSS");
 		var price=m.price;
 
@@ -148,9 +208,16 @@
 			window.myLine.update();
 		
 		
-		
+		document.getElementById('status').innerHTML = "Online";
+
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
+			if (textStatus == 'error')
+			{
+				document.getElementById('status').innerHTML = "Cannot connect to the trading platform";
+				//morgan_server_status=false;
+				//platform_server_status=false;
+			}
 		}
 		
 		});
@@ -188,6 +255,9 @@
 			return moment().add(days, 'h').unix();
 		}
 
+		function resetZoom() {
+			window.myLine.resetZoom()
+		}
 		
 		var config = {
 			type: 'line',
@@ -196,23 +266,44 @@
 				datasets: [{
 					label: "Market Price",
 
-					data: []
-					,
+					data: [],
+
+					borderColor: 'rgba(255, 0, 0, 0.7)',
+					backgroundColor: 'rgba(0, 0, 0, 0)',
 
 					fill: false
 				}]
 			},
 			options: {
+
+				elements: { point: { radius: 0, hitRadius: 10, hoverRadius: 1 }},
 				responsive: true,
                 title:{
                     display:true,
                     text:"Market Price"
                 },
+				pan: {
+					enabled: true,
+					mode: 'x',
+					speed: 10,
+					threshold: 10
+				},
+				zoom: {
+					enabled: true,
+//					drag: true,
+					mode: 'x',
+					limits: {
+						max: 10,
+						min: 0.5
+					}
+				},			
 				scales: {
 					xAxes: [{
 					type: "time",
 
 						time: {
+						min: moment("00:00:00:000000","HH:mm:ss:SSSSSS"),
+                        max: moment("09:00:00:000000","HH:mm:ss:SSSSSS"),						
 						tooltipFormat: 'hh:mm:ss:SSS',
 						minUnit:'second',	
 						displayFormats: {
@@ -225,23 +316,45 @@
 						scaleLabel: {
 							display: true,
 							labelString: 'Date'
+						},
+						gridLines: {
+							display: false,
+						},
+						ticks: {
+							autoSkip: true,
+							maxRotation: 0,
+							minRotation: 0,
+							maxTicksLimit:10,
+
 						}
+
 					} ],
 					yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 250,
+                            fixedStepSize:50
+                        },
 						scaleLabel: {
 							display: true,
-							labelString: 'value'
+							labelString: 'value',
+						},
+						gridLines: {
+							display: true,
 						}
+
 					}]
 				},
 			}
 		};
 
+		
+		
 		$.each(config.data.datasets, function(i, dataset) {
-			dataset.borderColor = randomColor(0.4);
-			dataset.backgroundColor = randomColor(0.5);
-			dataset.pointBorderColor = randomColor(0.7);
-			dataset.pointBackgroundColor = randomColor(0.5);
+			// dataset.borderColor = randomColor(0.4);
+			// dataset.backgroundColor = randomColor(0.5);
+			// dataset.pointBorderColor = randomColor(0.7);
+			// dataset.pointBackgroundColor = randomColor(0.5);
 			dataset.pointBorderWidth = 1;
 		});
 
@@ -249,6 +362,8 @@
 			var ctx = document.getElementById("canvas").getContext("2d");
 			window.myLine = new Chart(ctx, config);
 
+			
+			
 		};
 
 	

@@ -24,6 +24,10 @@ class UseThread(threading.Thread):
         self.quantity = quantity
 
     @staticmethod
+    def exit():
+        return "Stop"
+
+    @staticmethod
     def cal_current_time(cur_time):
         """
         convert input string time to second
@@ -151,26 +155,36 @@ class UseThread(threading.Thread):
         Returns:
             time interval in second
         """
+        db_id = sell_info['trans_id']
         if order_info is None:
             time_stamp = ""
             price = ""
             size = ""
+            avg = ""
         else:
             time_stamp = order_info['timestamp']
             price = order_info['avg_price']
             size = order_info['qty']
-        query = "INSERT INTO transact (id, time_quote, result, price, size, amount, value) " \
-                "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');". \
-            format(sell_info['trans_id'], time_stamp, result, price, size,
-                   sell_info['total_sell'], sell_info['sum_value'])
+            avg = sell_info['avg']
+        query = "INSERT INTO transact (id, time_quote, result, price, size, amount, value, avgr) " \
+                "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');". \
+            format(db_id, time_stamp, result, price, size,
+                   sell_info['total_sell'], sell_info['sum_value'], avg)
         # print query
-        try:
-            cur.execute(query)
-            connection.commit()
-        except Exception as info:
-            print "Can't insert data into transition history form"
-            print info
-            connection.rollback()
+        count = 0
+        while db_id == sell_info['trans_id'] and count < 10:
+            try:
+                cur.execute(query)
+                connection.commit()
+                db_id += 1
+            except Exception as info:
+                print "Can't insert data into transition history form"
+                print info
+                connection.rollback()
+                count += 1
+        if count > 9:
+            sys.exit(9)
+        return db_id
 
     @staticmethod
     def quote_info():
@@ -183,11 +197,16 @@ class UseThread(threading.Thread):
             JSON object of market information
         """
         query = "http://localhost:8080/query?id={}"
-        try:
-            quote = json.loads(urllib2.urlopen(query.format(1)).read())
-        except Exception:
-            print "Server error"
-            # sys.exit()
+        quote = None
+        count = 0
+        while quote is None and count <= 5:
+            try:
+                quote = json.loads(urllib2.urlopen(query.format(1)).read())
+            except Exception:
+                print "Server error"
+                count += 1
+        if count > 4:
+            sys.exit()
         return quote
 
     @staticmethod
@@ -207,6 +226,7 @@ class UseThread(threading.Thread):
         try:
             order_price = float(market_info['top_bid']['price']) * (100 - order_discount) * 0.01
             order_args = (order_size, order_price)
+            print order_args
             url = order_query.format(2, *order_args)
             order = json.loads(urllib2.urlopen(url).read())
             print order
@@ -237,7 +257,7 @@ class UseThread(threading.Thread):
         self.database_cleanup(conn, cur)
 
         # info_id = 0
-        sell_info = {'trans_id': 1, 'total_sell': 0, 'sum_value': 0}
+        sell_info = {'trans_id': 1, 'total_sell': 0, 'sum_value': 0.0, 'avg': 0.0}
         time_wait = 0
 
         while inventory > 0:
@@ -254,10 +274,9 @@ class UseThread(threading.Thread):
                 order = self.make_order(order_size, market_info, order_discount)
 
                 if order is None:
-                    self.insert_trans(
+                    sell_info['trans_id'] = self.insert_trans(
                         sell_info, "failure occurred, recalculate strategy", None, cur, conn)
 
-                    sell_info['trans_id'] += 1
                     market_info = self.quote_info()
                     current_time = self.cal_current_time(market_info['timestamp'])
                     # self.insert_info(info_id, time_mark, "Quoted at %s" % price, cur, conn)
@@ -266,14 +285,17 @@ class UseThread(threading.Thread):
                         order_size -= 10
                 else:
                     # record sell price and add total sell amount and revenue
-                    sell_info['total_sell'] += order_size
-                    sell_info['sum_value'] += float(order['avg_price']) * order_size
+                    sell_info['total_sell'] += int(order['qty'])
+                    sell_info['sum_value'] += float(order['avg_price']) * float(order['qty'])
+                    if sell_info['total_sell'] > 0:
+                        sell_info['avg'] = sell_info['sum_value']/sell_info['total_sell']
+                    else:
+                        print "error may occur when count total sell"
 
-                    self.insert_trans(sell_info, "success", order, cur, conn)
-                    sell_info['trans_id'] += 1
+                    sell_info['trans_id'] = self.insert_trans(sell_info, "success", order, cur, conn)
 
                     # change inventory amount and recalculate time
-                    inventory -= order_size
+                    inventory -= int(order['qty'])
                     current_time = self.cal_current_time(order['timestamp'])
                     break
 
@@ -291,7 +313,7 @@ class UseThread(threading.Thread):
 
             if inventory < order_size:
                 order_size = inventory
-
+                # Repeat the strategy until we run out of shares.
         print "this is total sell",
         print sell_info['total_sell']
         print "this is total value",
@@ -303,5 +325,7 @@ class UseThread(threading.Thread):
             avg_price = 0
         print avg_price
         result_order = "Finished with average price " + str(avg_price)
-        self.insert_trans(sell_info, result_order, None, cur, conn)
-        # Repeat the strategy until we run out of shares.
+        # sell_info['trans_id'] = self.insert_trans(sell_info, result_order, None, cur, conn)
+        cur.close()
+        conn.close()
+        return result_order

@@ -20,8 +20,11 @@ from Algorithm import UseThread
 import signal
 import sys
 
-
+num_request = 0
+new_thread = None
+trade_result = "No result yet"
 APP = Flask(__name__)
+APP._static_folder = "./static"
 
 DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
 ENGINE = create_engine(DATABASEURI)
@@ -42,14 +45,14 @@ def exit_gracefully(signum, frame):
     # in raw_input when CTRL+C is pressed, and our signal handler is not re-entrant
     signal.signal(signal.SIGINT, original_sigint)
     try:
-        if raw_input("\nReally quit? (y/n)> ").lower().startswith('y'):
-            sys.exit(1)
+        print("\nUser ask for exiting")
+        sys.exit(1)
 
     except KeyboardInterrupt:
         print("\nOK, quitting")
         sys.exit(1)
-    # restore the exit gracefully handler here
-    signal.signal(signal.SIGINT, exit_gracefully)
+        # restore the exit gracefully handler here
+        # signal.signal(signal.SIGINT, exit_gracefully)
 
 
 def crossdomain(origin=None, methods=None, headers=None,
@@ -96,6 +99,7 @@ def crossdomain(origin=None, methods=None, headers=None,
             func: function that used by request
 
         """
+
         def wrapped_function(*args, **kwargs):
             """
             return wrapped function decorator
@@ -163,12 +167,30 @@ def teardown_request(exception):
 
 
 @APP.route('/')
+def main():
+    """
+    access the login page
+
+    """
+    return render_template("login.html", **locals())
+
+
+@APP.route('/index')
 def index():
     """
     access the main page
 
     """
     return render_template("index.html", **locals())
+
+
+@APP.route('/register')
+def open_reg():
+    """
+    access the main page
+
+    """
+    return render_template("register.html", **locals())
 
 
 @APP.route("/get_price")
@@ -179,12 +201,16 @@ def get_price():
 
     """
     query = "http://localhost:8080/query?id={}"
-    quote = json.loads(urllib2.urlopen(query.format(1.01)).read())
-    price = float(quote['top_bid']['price'])
-    time_mark = str(quote['timestamp'])
-    print "Quoted at {} , time is {} ".format(price, time_mark)
-    info = {'time': time_mark, 'price': price}
-    return jsonify(rows=info)
+    try:
+        quote = json.loads(urllib2.urlopen(query.format(1.01)).read())
+        price = float(quote['top_bid']['price'])
+        time_mark = str(quote['timestamp'])
+        print "Quoted at {} , time is {} ".format(price, time_mark)
+        info = {'time': time_mark, 'price': price}
+        return jsonify(rows=info)
+    except Exception as info:
+        print info
+        return "urlopen_error"
 
 
 @APP.route("/a")
@@ -215,8 +241,29 @@ def handle_b():
     handle request of getting transaction history
 
     """
+    global num_request
+    num_request = 0
+
+    page = request.args.get('page', 0, type=int)
+    rows = request.args.get('rows', 0, type=int)
+    print page
+    print rows
+
     try:
-        newcurs = g.conn.execute("""SELECT * FROM transact ORDER BY id""")
+        curs1 = g.conn.execute("""SELECT count(*) FROM transact;""")
+    except Exception as info:
+        print "can not read record from database"
+        return str(info)
+    length = 0
+    for row in curs1:
+        length = row[0]
+        print length
+    curs1.close()
+
+    start = length - (page - 1) * rows
+    try:
+        newcurs = g.conn.execute("""Select * from (SELECT * FROM transact WHERE id <
+        '{}' AND id > '{}' ) as foo order by id;""".format(start + 1, start - rows))
     except Exception as info:
         print "can not read record from database"
         return str(info)
@@ -225,8 +272,31 @@ def handle_b():
     for result in newcurs:
         temp = {'z': result['id'], 'a': result['time_quote'], 'b': result['result'],
                 'c': result['price'], 'd': result['size'], 'e': result['amount'],
+                'f': result['value'], 'g': result['avgr']}
+        info.insert(0, temp)
+    newcurs.close()
+    total = {'rows': info, 'total': length}
+    return json.dumps(total)
+
+
+@APP.route("/c")
+@crossdomain(origin='*')
+def handle_c():
+    global num_request
+
+    try:
+        newcurs = g.conn.execute("""Select * from (SELECT * FROM transact where id >
+        '{}') as foo order by id;""".format(num_request))
+    except Exception as info:
+        print "can not read record from database"
+        return str(info)
+    info = []
+    for result in newcurs:
+        temp = {'z': result['id'], 'a': result['time_quote'], 'b': result['result'],
+                'c': result['price'], 'd': result['size'], 'e': result['amount'],
                 'f': result['value']}
         info.insert(0, temp)
+        num_request += 1
     newcurs.close()
     return jsonify(rows=info)
 
@@ -238,12 +308,47 @@ def handle_submit():
     handle request of start an order
 
     """
+    global num_request
+    global new_thread
+    if new_thread is not None:
+        new_thread.exit()
+    num_request = 0
     lang = request.args.get('quantity', 0, type=float)
-    temp = UseThread(lang)
-    temp.setDaemon(True)
-    temp.start()
+    new_thread = UseThread(lang)
+    new_thread.setDaemon(True)
+    new_thread.start()
     print lang
     return "1\n"
+
+
+@APP.route("/strategy", methods=['GET'])
+@crossdomain(origin='*')
+def strategy():
+    """
+    show user how the strategy of trading is being calculated
+
+    """
+    global new_thread
+    if new_thread is not None:
+        return "I'm not trading"
+    else:
+        return "Doing trading"
+
+
+@APP.route("/result", methods=['GET'])
+@crossdomain(origin='*')
+def trade_res():
+    """
+    show user how the strategy of trading is being calculated
+
+    """
+    global trade_result
+    global new_thread
+    if new_thread is not None:
+        trade_result = new_thread.join()
+    else:
+        trade_result = "No trading started yet"
+    return trade_result
 
 
 @APP.route("/register", methods=['POST'])
@@ -256,6 +361,7 @@ def register():
     username = request.form['username']
     password = request.form['password']
     pw_hash = generate_password_hash(password)
+    conn = "database"
     try:
         conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
         cur = conn.cursor()
@@ -281,6 +387,7 @@ def del_user():
 
     """
     username = request.form['username']
+    conn = "database"
     try:
         conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
         cur = conn.cursor()
@@ -320,22 +427,11 @@ def login():
     newcurs.close()
     return "2\n"
 
-
-@APP.route("/strategy", methods=['GET'])
-@crossdomain(origin='*')
-def strategy():
-    """
-    show user how the strategy of trading is being calculated
-
-    """
-    return "start trading"
-
-
 if __name__ == "__main__":
     # check whether the file is called directly, otherwise do not run
     original_sigint = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, exit_gracefully)
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+    # reload(sys)
+    # sys.setdefaultencoding('utf8')
 
-    APP.run(debug=False, port=8000)
+    APP.run(port=8000, threaded=True)
