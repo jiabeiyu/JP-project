@@ -6,8 +6,5 @@ services:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
-install:
-  - pip install .
-  - pip install -r requirements.txt
 
 script: test
