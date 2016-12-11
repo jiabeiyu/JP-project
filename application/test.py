@@ -27,8 +27,19 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/')
         print "access main page"
 
+    def register(self, username, password):
+        return self.app.post('/register', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+
     def test_register(self):
-        rv = self.register('admin', 'default')
+        rv = self.app.post('/del_user', data=dict(
+            username='newuser',
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        print "delete user data"
+        rv = self.register('newuser', 'default')
         assert '1' in rv.data
         print "successfully register"
 
@@ -39,10 +50,9 @@ class FlaskrTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def test_login(self):
-        rv = self.login('admin', 'default')
+        rv = self.login('newuser', 'default')
         assert '1' in rv.data
         rv = self.login('xxxx', '12345')
-        print rv.data
         assert '2' in rv.data
         print "all login are passed"
         rv = self.app.post('/del_user', data=dict(
@@ -54,12 +64,6 @@ class FlaskrTestCase(unittest.TestCase):
     def test_get_price(self):
         rv = self.app.get('/get_price')
         print "sccessfully get test"
-
-    def register(self, username, password):
-        return self.app.post('/register', data=dict(
-            username=username,
-            password=password
-        ), follow_redirects=True)
 
     def test_sell(self):
         rv = self.app.post('/submit', data=dict(

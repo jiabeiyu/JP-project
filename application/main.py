@@ -200,7 +200,7 @@ def get_price():
     handle request of getting time and price
 
     """
-    query = "http://localhost:8080/query?id={}"
+    query = "http://Linnan@localhost:8080/query?id={}"
     try:
         quote = json.loads(urllib2.urlopen(query.format(1.01)).read())
         price = float(quote['top_bid']['price'])
@@ -363,7 +363,7 @@ def register():
     pw_hash = generate_password_hash(password)
     conn = "database"
     try:
-        conn = psycopg2.connect("dbname='stock' user='' host='localhost' password='' ")
+        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
         cur = conn.cursor()
         query = "INSERT INTO user_info (name, pass) VALUES ('{}', '{}');".format(username, pw_hash)
         cur.execute(query)
@@ -389,7 +389,7 @@ def del_user():
     username = request.form['username']
     conn = "database"
     try:
-        conn = psycopg2.connect("dbname='stock' user='' host='localhost' password='' ")
+        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
         cur = conn.cursor()
         query = "DELETE FROM user_info WHERE name='{}';".format(username)
         cur.execute(query)
