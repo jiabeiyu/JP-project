@@ -58,6 +58,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/del_user', data=dict(
             username='admin',
         ), follow_redirects=True)
+        print rv.data
         assert '1' in rv.data
         print "delete user data"
 
