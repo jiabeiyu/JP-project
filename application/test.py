@@ -25,7 +25,12 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_empty_db(self):
         rv = self.app.get('/')
-        print "pass"
+        print "access main page"
+
+    def test_register(self):
+        rv = self.register('admin', 'default')
+        assert '1' in rv.data
+        print "successfully register"
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
@@ -35,11 +40,16 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_login(self):
         rv = self.login('admin', 'default')
-        assert '2' in rv.data
-        rv = self.login('user1', '12345')
-        print rv.data
         assert '1' in rv.data
+        rv = self.login('xxxx', '12345')
+        print rv.data
+        assert '2' in rv.data
         print "all login are passed"
+        rv = self.app.post('/del_user', data=dict(
+            username='admin',
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        print "delete user data"
 
     def test_get_price(self):
         rv = self.app.get('/get_price')
@@ -50,14 +60,6 @@ class FlaskrTestCase(unittest.TestCase):
             username=username,
             password=password
         ), follow_redirects=True)
-
-    def test_register(self):
-        rv = self.register('admin', 'default')
-        assert '1' in rv.data
-        rv = self.app.post('/del_user', data=dict(
-            username='admin',
-        ), follow_redirects=True)
-        assert '1' in rv.data
 
     def test_sell(self):
         rv = self.app.post('/submit', data=dict(
