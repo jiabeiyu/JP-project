@@ -96,8 +96,8 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_history(self):
         rv = self.app.get('/b')
+        assert type(rv.data[0]) is str
         print "sccessfully get history"
-        assert '1' in rv.data
 
     def test_del(self):
         rv = self.app.post('/del_user', data=dict(
