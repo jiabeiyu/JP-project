@@ -1,5 +1,3 @@
-Database name: stock
-
 CREATE TABLE info(
 id INT,
 time_quote VARCHAR(100),
