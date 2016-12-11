@@ -26,7 +26,7 @@ trade_result = "No result yet"
 APP = Flask(__name__)
 APP._static_folder = "./static"
 
-DATABASEURI = "postgresql://localhost:5432/stock"
+DATABASEURI = "postgresql://postgres@localhost:5432/stock"
 ENGINE = create_engine(DATABASEURI)
 
 
@@ -363,7 +363,7 @@ def register():
     pw_hash = generate_password_hash(password)
     conn = "database"
     try:
-        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
+        conn = psycopg2.connect("dbname='stock' user='postgres' host='localhost' password='' ")
         cur = conn.cursor()
         query = "INSERT INTO user_info (name, pass) VALUES ('{}', '{}');".format(username, pw_hash)
         cur.execute(query)
@@ -389,7 +389,7 @@ def del_user():
     username = request.form['username']
     conn = "database"
     try:
-        conn = psycopg2.connect("dbname='stock' user='Linnan' host='localhost' password='' ")
+        conn = psycopg2.connect("dbname='stock' user='postgres' host='localhost' password='' ")
         cur = conn.cursor()
         query = "DELETE FROM user_info WHERE name='{}';".format(username)
         cur.execute(query)
