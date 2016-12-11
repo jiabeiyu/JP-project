@@ -26,7 +26,7 @@ trade_result = "No result yet"
 APP = Flask(__name__)
 APP._static_folder = "./static"
 
-DATABASEURI = "postgresql://Linnan@localhost:5432/stock"
+DATABASEURI = "postgresql://localhost:5432/stock"
 ENGINE = create_engine(DATABASEURI)
 
 
