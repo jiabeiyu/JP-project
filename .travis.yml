@@ -7,7 +7,7 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database stock;' -U Linnan
+  - psql -c 'create database stock;' -U postgres Linnan
   - psql -d stock -a -f ../template.sql
   - cd ..
   - python server.py &
