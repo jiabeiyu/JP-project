@@ -16,8 +16,11 @@ before_script:
 install:
   - cd application
   - pip install -r requirements.txt
-  
+  - pip install coveralls
   
 script: python test.py
 
+
+after_success:
+  coveralls
  
