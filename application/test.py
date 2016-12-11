@@ -65,36 +65,36 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/get_price')
         print "sccessfully get test"
 
-    def test_sell(self):
-        rv = self.app.post('/submit', data=dict(
-            quantity=100,
-        ), follow_redirects=True)
-        assert '1' in rv.data
-        rv = self.app.post('/submit', data=dict(
-            quantity=1000,
-        ), follow_redirects=True)
-        assert '1' in rv.data
-        rv = self.app.post('/submit', data=dict(
-            quantity=10000,
-        ), follow_redirects=True)
-        assert '1' in rv.data
-        rv = self.app.post('/submit', data=dict(
-            quantity=100000,
-        ), follow_redirects=True)
-        assert '1' in rv.data
-        rv = self.app.post('/submit', data=dict(
-            quantity=1000000,
-        ), follow_redirects=True)
-        assert '1' in rv.data
-        rv = self.app.post('/submit', data=dict(
-            quantity=100,
-        ), follow_redirects=True)
-        assert '1' in rv.data
+    # def test_sell(self):
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=100,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=1000,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=10000,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=100000,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=1000000,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
+    #     rv = self.app.post('/submit', data=dict(
+    #         quantity=100,
+    #     ), follow_redirects=True)
+    #     assert '1' in rv.data
 
-    def test_history(self):
-        rv = self.app.get('/b')
-        print "sccessfully get history"
-        assert '1' in rv.data
+    # def test_history(self):
+    #     rv = self.app.get('/b')
+    #     print "sccessfully get history"
+    #     assert '1' in rv.data
 
 
 if __name__ == '__main__':

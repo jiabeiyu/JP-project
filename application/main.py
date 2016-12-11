@@ -200,7 +200,7 @@ def get_price():
     handle request of getting time and price
 
     """
-    query = "http://Linnan@localhost:8080/query?id={}"
+    query = "http://localhost:8080/query?id={}"
     try:
         quote = json.loads(urllib2.urlopen(query.format(1.01)).read())
         price = float(quote['top_bid']['price'])
