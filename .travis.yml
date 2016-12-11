@@ -9,6 +9,8 @@ services:
 before_script:
   - psql -c 'create database stock;' -U postgres
   - psql -d stock -a -f ../template.sql
+  - python ../server.py &
+  - sleep 1 # give it some time to start
 
 install:
   - cd application
