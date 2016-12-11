@@ -34,7 +34,7 @@ class FlaskrTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def test_register(self):
-        print "test_login"
+        print "test_register"
         rv = self.app.post('/del_user', data=dict(
             username='newuser',
         ), follow_redirects=True)
