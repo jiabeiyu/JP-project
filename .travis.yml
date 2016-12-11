@@ -1,10 +1,20 @@
 language: python
 
+notifications:
+  email: false
+
 services:
   - postgresql
 
 before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
+  - psql -c 'create database stock;' -U postgres
+  - psql -d stock -a -f ../template.sql
 
-
+install:
+  - cd application
+  - pip install -r requirements.txt
+  
+  
 script: python test.py
+
+ 
