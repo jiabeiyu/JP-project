@@ -1,5 +1,3 @@
-Database name: stock
-
 CREATE TABLE info(
 id INT,
 time_quote VARCHAR(100),
@@ -23,6 +21,5 @@ info VARCHAR(500));
 
 
 CREATE TABLE user_info(
-name VARCHAR(50),
-pass VARCHAR(300)
-PRIMARY KEY (name));
+name VARCHAR(50) PRIMARY KEY,
+pass VARCHAR(300));
