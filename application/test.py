@@ -33,8 +33,7 @@ class FlaskrTestCase(unittest.TestCase):
             password=password
         ), follow_redirects=True)
 
-    def test_register(self):
-        print "test_register"
+    def real_register(self):
         rv = self.app.post('/del_user', data=dict(
             username='newuser',
         ), follow_redirects=True)
@@ -51,9 +50,10 @@ class FlaskrTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def test_login(self):
-        print "test_login"
+        self.real_register()
         rv = self.login('newuser', 'default')
-        print rv.data
+        print "this is test_login ",
+        print rv
         assert '1' in rv.data
         rv = self.login('xxxx', '12345')
         assert '2' in rv.data
@@ -68,36 +68,43 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/get_price')
         print "sccessfully get test"
 
-    # def test_sell(self):
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=100,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=1000,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=10000,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=100000,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=1000000,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
-    #     rv = self.app.post('/submit', data=dict(
-    #         quantity=100,
-    #     ), follow_redirects=True)
-    #     assert '1' in rv.data
+    def test_sell(self):
+        rv = self.app.post('/submit', data=dict(
+            quantity=100,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=1000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=10000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=100000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=1000000,
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        rv = self.app.post('/submit', data=dict(
+            quantity=100,
+        ), follow_redirects=True)
+        assert '1' in rv.data
 
-    # def test_history(self):
-    #     rv = self.app.get('/b')
-    #     print "sccessfully get history"
-    #     assert '1' in rv.data
+    def test_history(self):
+        rv = self.app.get('/b')
+        print "sccessfully get history"
+        assert '1' in rv.data
+
+    def test_del(self):
+        rv = self.app.post('/del_user', data=dict(
+            username='newuser',
+        ), follow_redirects=True)
+        assert '1' in rv.data
+        print "delete user data"
 
 
 if __name__ == '__main__':
