@@ -1,3 +1,5 @@
+https://travis-ci.org/TeamCYWW/JP-project.svg?branch=master
+
 Last update: Oct 27th 2016
 
 Linnan Wang
