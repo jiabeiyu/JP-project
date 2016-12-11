@@ -1,4 +1,4 @@
-https://travis-ci.org/TeamCYWW/JP-project.svg?branch=master
+[![Build Status](https://travis-ci.org/TeamCYWW/JP-project.svg?branch=master)](https://travis-ci.org/TeamCYWW/JP-project)
 
 Last update: Oct 27th 2016
 
