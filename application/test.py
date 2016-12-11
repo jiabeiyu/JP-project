@@ -50,6 +50,7 @@ class FlaskrTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def test_login(self):
+        print "test_login"
         rv = self.login('newuser', 'default')
         print rv.data
         assert '1' in rv.data
