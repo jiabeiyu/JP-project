@@ -5,10 +5,14 @@ services:
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  
+install:
   - cd application
-  - sudo pip install SQLAlchemy
-  - sudo pip install Flask
-  - sudo pip install Flask-SQLAlchemy
+  - pip install SQLAlchemy
+  - pip install Flask
+
+  
+  
 script: python test.py
 
  
