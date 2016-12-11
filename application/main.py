@@ -371,9 +371,9 @@ def register():
         cur.close()
         conn.close()
     except Exception as info:
+        print str(info)
         conn.rollback()
         print "can not write record to database"
-        print str(info)
         return str(info)
 
     return "1\n"
